@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.bluromatic.KEY_BLUR_LEVEL
+import com.example.bluromatic.KEY_IMAGE_URI
 import com.example.bluromatic.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -15,6 +17,9 @@ private const val TAG = "BlurWorker" // no esta relacionado con doWork()
 
 class BlurWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
     override suspend fun doWork(): Result {
+        val resoureUri = inputData.getString(KEY_IMAGE_URI)
+        val blurLevel = inputData.getInt(KEY_BLUR_LEVEL, 1)
+
         makeStatusNotification(
             applicationContext.resources.getString(R.string.blurring_image),
             applicationContext
@@ -22,6 +27,10 @@ class BlurWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
 
         return withContext(Dispatchers.IO){
             return@withContext try {
+                require(!resoureUri.isNullOrBlank()){
+
+                }
+
                 delay(2000)
 
                 val picture = BitmapFactory.decodeResource(
