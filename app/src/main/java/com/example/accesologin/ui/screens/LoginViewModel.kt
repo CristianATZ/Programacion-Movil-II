@@ -5,13 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.accesologin.network.LoginApi
+import com.example.accesologin.network.repository.LoginApi
 import com.example.accesologin.network.LoginDto
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
-import retrofit2.Retrofit
 
 class LoginViewModel() : ViewModel() {
 
