@@ -6,7 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.accesologin.network.LoginApi
+import com.example.accesologin.network.LoginDto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
+import retrofit2.Retrofit
 
 class LoginViewModel() : ViewModel() {
 
@@ -17,10 +22,25 @@ class LoginViewModel() : ViewModel() {
         getAlumno()
     }
 
-    private fun getAlumno() {
-        viewModelScope.launch {
-            val result = LoginApi.retrofitService.getAlumno()
-            loginUiState = result
+    private fun getAlumno(
+        matricula: String = "s20120154",
+        contrasenia: String = "8s_RH-",
+        tipoUsuario: String = "ALUMNO"
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val authService = LoginApi.retrofitService
+                val responseService = authService.getAlumno(
+                    LoginDto(
+                        matricula,
+                        contrasenia,
+                        tipoUsuario
+                    )
+                )
+
+            } catch(e: Exception) {
+
+            }
         }
     }
 
