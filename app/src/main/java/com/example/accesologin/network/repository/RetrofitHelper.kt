@@ -6,16 +6,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 private const val BASE_URL =
-    "https://sicenet.surguanajuato.tecnm.mx/ws/wsalumnos.asmx"
+    "https://sicenet.surguanajuato.tecnm.mx/"
 
 val retrofit = Retrofit.Builder()
     .addConverterFactory(SimpleXmlConverterFactory.create())
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
-    .client(getClient())
     .baseUrl(BASE_URL)
     .build()
 
-private fun getClient() : OkHttpClient {
-    return OkHttpClient.Builder()
-        .addInterceptor(HeaderInterceptor()).build()
-}
