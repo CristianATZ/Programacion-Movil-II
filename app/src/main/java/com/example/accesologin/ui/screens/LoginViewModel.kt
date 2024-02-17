@@ -1,6 +1,5 @@
 package com.example.accesologin.ui.screens
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,9 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.accesologin.model.AccesoLoginRequest
 import com.example.accesologin.model.SoapEnvelope
-import com.example.accesologin.network.repository.LoginApi
+import com.example.accesologin.network.repository.LoginServiceFactory.retrofitService
+import com.example.accesologin.network.repository.bodyAcceso
+import com.example.accesologin.network.repository.bodyPerfil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import retrofit2.awaitResponse
 
 class LoginViewModel() : ViewModel() {
 
@@ -27,20 +31,31 @@ class LoginViewModel() : ViewModel() {
         tipoUsuario: String = "ALUMNO"
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                // Crear una instancia de la solicitud
-                val request = SoapEnvelope(
-                    AccesoLoginRequest(matricula, contrasenia, tipoUsuario)
-                )
 
-                // Realizar la solicitud
-                val response = LoginApi.retrofitService.accesoLogin(request)
+            try {
+                // convertir la cadena XML a un RequestBody
+                val requestBody = RequestBody.create("text/xml".toMediaTypeOrNull(), bodyAcceso)
+
+                // realizar la solicitud
+                val response = retrofitService.accesoLogin(requestBody).awaitResponse()
+
 
                 // Manejar la respuesta
                 if (response.isSuccessful) {
-                    val result = response.body()?.body?.accesoLoginResult
-                    loginUiState = "a"
+                    val result = response.body()?.string()
+                    loginUiState = result.toString()
+
                     // Procesar el resultado según sea necesario
+                    val resultBody = RequestBody.create("text/xml".toMediaTypeOrNull(), bodyPerfil)
+
+                    val resultPerfil = retrofitService.getPerfilAcademico(resultBody).awaitResponse()
+
+                    if(resultPerfil.isSuccessful){
+                        // manejar la informacion
+                    } else {
+
+                    }
+
                 } else {
                     // Manejar el error
                     loginUiState = "fallido"
