@@ -18,7 +18,7 @@ import retrofit2.awaitResponse
 
 class LoginViewModel() : ViewModel() {
 
-    var loginUiState: String by mutableStateOf("asd")
+    var loginUiState: String by mutableStateOf("cargando...")
         private set
 
     init {

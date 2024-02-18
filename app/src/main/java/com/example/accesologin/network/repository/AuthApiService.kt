@@ -18,7 +18,7 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 private const val BASE_URL =
-    "https://sicenet.surguanajuato.tecnm.mx/"
+    "https://sicenet.surguanajuato.tecnm.mx"
 
 const val bodyAcceso = """
                 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -26,9 +26,9 @@ const val bodyAcceso = """
                     xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
                   <soap:Body>
                     <accesoLogin xmlns="http://tempuri.org/">
-                      <strMatricula>%S</strMatricula>
-                      <strContrasenia>%S</strContrasenia>
-                      <tipoUsuario>ALUMNO or DOCENTE</tipoUsuario>
+                      <strMatricula>S20120202</strMatricula>
+                      <strContrasenia>7Sf_/r6Q</strContrasenia>
+                      <tipoUsuario>ALUMNO</tipoUsuario>
                     </accesoLogin>
                   </soap:Body>
                 </soap:Envelope>
@@ -45,11 +45,13 @@ const val bodyPerfil = """<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSc
 interface LoginApiService {
     // autenticacion
     @Headers(
+        "Host: sicenet.surguanajuato.tecnm.mx",
         "Content-Type: text/xml",
-        "SOAPAction: \"http://tempuri.org/getAlumnoAcademicoWithLineamiento\""
+        "Content-Length: length",
+        "SOAPAction: \"http://tempuri.org/accesoLogin\"",
         //"Cookie: <Insertar cookie>"
     )
-    @POST("ws/wsalumnos.asmx")
+    @POST("/ws/wsalumnos.asmx?op=accesoLogin")
     fun accesoLogin(@Body requestBody: RequestBody): Call<ResponseBody>
 
     // obtener perfil
