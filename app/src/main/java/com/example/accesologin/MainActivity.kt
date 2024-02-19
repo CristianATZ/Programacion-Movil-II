@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.accesologin.navigation.AppNavigation
 import com.example.accesologin.ui.AccesoLoginApp
+import com.example.accesologin.ui.screens.LoginScreen
 import com.example.accesologin.ui.theme.AccesoLoginTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +25,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AccesoLoginApp()
+                    //AccesoLoginApp()
+                    //LoginScreen()
+                    AppNavigation()
                 }
             }
         }
