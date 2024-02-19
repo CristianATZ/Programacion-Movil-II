@@ -11,6 +11,11 @@ import com.example.accesologin.network.repository.LoginServiceFactory.retrofitSe
 import com.example.accesologin.network.repository.bodyAcceso
 import com.example.accesologin.network.repository.bodyPerfil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -18,14 +23,13 @@ import retrofit2.awaitResponse
 
 class LoginViewModel() : ViewModel() {
 
-    var loginUiState: String by mutableStateOf("cargando...")
-        private set
-
-    var _matricula by mutableStateOf("S20120154")
-    var _password by mutableStateOf("8s_RH-")
+    private val _uiState = MutableStateFlow(LoginUiState(""))
+    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     init {
-        getAuth(_matricula, _password)
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.value = LoginUiState("Cargando...")
+        }
     }
 
     /*
@@ -38,7 +42,7 @@ class LoginViewModel() : ViewModel() {
     7Sf_/r6Q
      */
 
-    private fun getAuth(
+    fun getAuth(
         matricula: String,
         contrasenia: String
     ) {
@@ -55,8 +59,14 @@ class LoginViewModel() : ViewModel() {
 
                 // Manejar la respuesta
                 if (response.isSuccessful) {
+
                     val result = response.body()?.string()
-                    loginUiState = result.toString()
+
+                    //delay(2000)
+
+                    _uiState.update { current ->
+                        current.copy(result.toString())
+                    }
 
                     // Procesar el resultado según sea necesario
                     val resultBody = RequestBody.create("text/xml".toMediaTypeOrNull(), bodyPerfil)
@@ -71,13 +81,19 @@ class LoginViewModel() : ViewModel() {
 
                 } else {
                     // Manejar el error
-                    loginUiState = "fallido"
                 }
 
             } catch (e: Exception) {
-                // Manejar excepciones
+                _uiState.update { current ->
+                    current.copy("Error...")
+                }
             }
         }
     }
 
 }
+
+
+data class LoginUiState(
+    var acceso : String
+)
