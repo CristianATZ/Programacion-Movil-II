@@ -14,6 +14,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
@@ -45,20 +46,27 @@ const val bodyPerfil = """<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSc
 interface LoginApiService {
     // autenticacion
     @Headers(
-        "Host: sicenet.surguanajuato.tecnm.mx",
         "Content-Type: text/xml",
-        "Content-Length: length",
         "SOAPAction: \"http://tempuri.org/accesoLogin\"",
         //"Cookie: <Insertar cookie>"
     )
-    @POST("/ws/wsalumnos.asmx?op=accesoLogin")
-    fun accesoLogin(@Body requestBody: RequestBody): Call<ResponseBody>
+    @POST("/ws/wsalumnos.asmx")
+    fun getLogin(@Body requestBody: RequestBody): ResponseBody
 
-    // obtener perfil
-    @Headers("Content-Type: text/xml")
+    @GET("ws/wsalumnos.asmx")
+    fun getCookies(): ResponseBody
+}
+
+interface AlumnoInfoService {
+    @Headers(
+        "Content-Type: text/xml",
+        "SOAPAction: \"http://tempuri.org/getAlumnoAcademicoWithLineamiento\"",
+        //"Cookie: .ASPXANONYMOUS=Ep4u2XmY2gEkAAAAOWQ1NzE0ZjMtNDBjZi00NjVmLWJjNDEtYmE3MTIwMmE3ZDgwq__VynMXe9_0bf2Sns0hO3CtLws1"
+    )
     @POST("ws/wsalumnos.asmx")
-    fun getPerfilAcademico(@Body requestBody: RequestBody): Call<ResponseBody>
-
+    suspend fun getInfo(
+        @Body requestBody: RequestBody
+    ): ResponseBody
 }
 
 

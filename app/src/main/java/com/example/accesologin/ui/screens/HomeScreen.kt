@@ -1,5 +1,6 @@
 package com.example.accesologin.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,6 @@ fun ResultScreen(loginViewModel: LoginViewModel, modifier: Modifier = Modifier, 
         modifier = modifier
     ) {
         //Text(text = acceso.acceso)
-
 
         if(acceso.acceso.contains("<accesoLoginResult>")){
             val result = loginViewModel.convertXmlToJson(acceso.acceso)

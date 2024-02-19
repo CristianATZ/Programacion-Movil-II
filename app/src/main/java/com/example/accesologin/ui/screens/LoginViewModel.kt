@@ -1,10 +1,12 @@
 package com.example.accesologin.ui.screens
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.accesologin.data.Repository
 import com.example.accesologin.model.AccesoLoginRequest
 import com.example.accesologin.model.SoapEnvelope
 import com.example.accesologin.network.repository.LoginServiceFactory.retrofitService
@@ -15,6 +17,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +29,7 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.awaitResponse
 
+/*
 class LoginViewModel() : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState(""))
@@ -62,12 +66,14 @@ class LoginViewModel() : ViewModel() {
                 val response = retrofitService.accesoLogin(requestBody).awaitResponse()
 
 
+                _uiState.update { current ->
+                    current.copy("false")
+                }
+
                 // Manejar la respuesta
                 if (response.isSuccessful) {
 
                     val result = response.body()?.string()
-
-                    //delay(2000)
 
                     _uiState.update { current ->
                         current.copy(result.toString())
@@ -85,12 +91,14 @@ class LoginViewModel() : ViewModel() {
                     }
 
                 } else {
-                    // Manejar el error
+                    _uiState.update { current ->
+                        current.copy("false")
+                    }
                 }
 
             } catch (e: Exception) {
                 _uiState.update { current ->
-                    current.copy("Error...")
+                    current.copy("false")
                 }
             }
         }
@@ -112,7 +120,35 @@ class LoginViewModel() : ViewModel() {
 
 }
 
+ */
+
+class LoginViewModel(private val alumnosRepository: Repository): ViewModel() {
+    private val _uiState = MutableStateFlow(LoginUiState(""))
+    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.value = LoginUiState("Cargando...")
+        }
+    }
+
+    suspend fun getAccess(matricula: String, password: String, tipoUsuario: String): Boolean {
+        return alumnosRepository.getAccess(matricula, password, tipoUsuario)
+    }
+
+    suspend fun getInfo(): String {
+        val informacion = viewModelScope.async {
+            alumnosRepository.getInfo()
+        }
+        return informacion.await()
+    }
+}
+
+
 
 data class LoginUiState(
-    var acceso : String
+    var matricula: String = "",
+    val password: String = "",
+    var errorLogin: String = "",
+    var tipoUsuario: String = ""
 )
