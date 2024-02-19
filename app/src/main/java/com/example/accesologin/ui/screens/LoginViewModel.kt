@@ -10,6 +10,10 @@ import com.example.accesologin.model.SoapEnvelope
 import com.example.accesologin.network.repository.LoginServiceFactory.retrofitService
 import com.example.accesologin.network.repository.bodyAcceso
 import com.example.accesologin.network.repository.bodyPerfil
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +23,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.awaitResponse
 
 class LoginViewModel() : ViewModel() {
@@ -88,6 +93,20 @@ class LoginViewModel() : ViewModel() {
                     current.copy("Error...")
                 }
             }
+        }
+    }
+
+    fun convertXmlToJson(xmlString: String): JsonObject{
+        try {
+            var xmlProcessed = xmlString.substringAfter("<accesoLoginResult>")
+            xmlProcessed = xmlProcessed.substringBefore("</accesoLoginResult>")
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            val jsonElement = JsonParser().parse(xmlProcessed)
+            val jsonObject = jsonElement.asJsonObject
+            return jsonObject
+        } catch (e: JsonSyntaxException){
+            e.printStackTrace()
+            return JsonObject()
         }
     }
 
