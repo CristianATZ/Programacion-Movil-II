@@ -97,16 +97,11 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         /*
-                        CoroutineScope(Dispatchers.Default).launch{
-                            //getCookie()
-                            //enviarSoapRequest()
-                            //AccesoLoginApp()
-                        }
-                         */
-                        /*
                         val loginViewModel = LoginViewModel()
                         loginViewModel.getAuth()
                          */
+                        //LoginViewModel()._matricula = _matricula
+                        //LoginViewModel()._password = _password
                         navController.navigate(AppScreens.AccesoLoginApp.route)
                     },
                     modifier = Modifier

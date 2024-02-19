@@ -21,20 +21,33 @@ class LoginViewModel() : ViewModel() {
     var loginUiState: String by mutableStateOf("cargando...")
         private set
 
+    var _matricula by mutableStateOf("S20120154")
+    var _password by mutableStateOf("8s_RH-")
+
     init {
-        getAuth()
+        getAuth(_matricula, _password)
     }
 
+    /*
+    CRISTIAN
+    S20120154
+    8s_RH-
+
+    ALAN
+    S20120202
+    7Sf_/r6Q
+     */
+
     private fun getAuth(
-        matricula: String = "s20120154",
-        contrasenia: String = "8s_RH-",
-        tipoUsuario: String = "ALUMNO"
+        matricula: String,
+        contrasenia: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
                 // convertir la cadena XML a un RequestBody
-                val requestBody = RequestBody.create("text/xml".toMediaTypeOrNull(), bodyAcceso)
+                val requestBody = RequestBody.create("text/xml".toMediaTypeOrNull(), String.format(
+                    bodyAcceso, matricula, contrasenia))
 
                 // realizar la solicitud
                 val response = retrofitService.accesoLogin(requestBody).awaitResponse()

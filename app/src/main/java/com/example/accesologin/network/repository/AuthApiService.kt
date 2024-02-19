@@ -26,8 +26,8 @@ const val bodyAcceso = """
                     xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
                   <soap:Body>
                     <accesoLogin xmlns="http://tempuri.org/">
-                      <strMatricula>S20120202</strMatricula>
-                      <strContrasenia>7Sf_/r6Q</strContrasenia>
+                      <strMatricula>%s</strMatricula>
+                      <strContrasenia>%s</strContrasenia>
                       <tipoUsuario>ALUMNO</tipoUsuario>
                     </accesoLogin>
                   </soap:Body>
