@@ -61,6 +61,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-simplexml:2.1.0")
     // NavController
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    // Icons
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
