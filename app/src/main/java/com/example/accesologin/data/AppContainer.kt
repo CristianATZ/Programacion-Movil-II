@@ -42,15 +42,12 @@ class DefaultAppContainer: AppContainer {
 class CookiesInterceptor: Interceptor {
     // Variable que almacena las cookies
     private var cookies: List<String> = emptyList()
-
     // Método para establecer las cookies
     fun setCookies(cookies: List<String>) {
         this.cookies = cookies
     }
-
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-
         // Agregar las cookies al encabezado de la solicitud
         if (cookies.isNotEmpty()) {
             val cookiesHeader = StringBuilder()
@@ -60,7 +57,6 @@ class CookiesInterceptor: Interceptor {
                 }
                 cookiesHeader.append(cookie)
             }
-
             request = request.newBuilder()
                 .header("Cookie", cookiesHeader.toString())
                 .build()
