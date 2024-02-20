@@ -6,7 +6,9 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import com.example.accesologin.network.repository.AlumnoInfoService
+import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.LoginApiService
+import com.example.accesologin.network.repository.SiceApiService
 
 interface AppContainer {
     val alumnosRepository: Repository
@@ -25,15 +27,15 @@ class DefaultAppContainer: AppContainer {
         .baseUrl(BASE_URL).client(cliente)
         .build()
 
-    private val retrofitService : AlumnoInfoService by lazy {
-        retrofit.create(AlumnoInfoService::class.java)
+    private val retrofitService : SiceApiService by lazy {
+        retrofit.create(SiceApiService::class.java)
     }
 
-    private val retrofitServiceInfo : LoginApiService by lazy {
-        retrofit.create(LoginApiService::class.java)
+    private val retrofitServiceInfo : InfoService by lazy {
+        retrofit.create(InfoService::class.java)
     }
 
-    override val alumnosRepository: NetworkRepository by lazy {
+    override val alumnosRepository: Repository by lazy {
         NetworkRepository(retrofitService,retrofitServiceInfo)
     }
 }

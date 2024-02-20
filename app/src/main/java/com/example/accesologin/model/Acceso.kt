@@ -3,12 +3,12 @@ package com.example.accesologin.model
 data class Acceso (
     var acceso: Boolean,
     var estatus: Boolean,
-    var tipoUsuario: Int,
     var contrasenia: String,
     var matricula: String
 )
 
 data class Alumno (
+    var nombre:String="",
     var fechaReins:String="",
     var modEducativo:String="",
     var adeudo:String="",
@@ -22,6 +22,5 @@ data class Alumno (
     var especialidad:String="",
     var carrera:String="",
     var lineamiento:Int=0,
-    var nombre:String="",
     var matricula:String="",
 )
