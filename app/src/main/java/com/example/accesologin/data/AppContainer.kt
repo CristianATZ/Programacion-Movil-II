@@ -9,7 +9,7 @@ import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.SiceApiService
 
 interface AppContainer {
-    val repository: Repository
+    val alumnosRepository: AlumnosRepository
 }
 
 class DefaultAppContainer: AppContainer {
@@ -33,8 +33,8 @@ class DefaultAppContainer: AppContainer {
         retrofit.create(InfoService::class.java)
     }
 
-    override val repository: Repository by lazy {
-        NetworkRepository(retrofitService,retrofitServiceInfo)
+    override val alumnosRepository: AlumnosRepository by lazy {
+        NetworkAlumnosRepository(retrofitService, retrofitServiceInfo)
     }
 }
 

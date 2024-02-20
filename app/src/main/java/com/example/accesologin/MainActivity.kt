@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.accesologin.navigation.AppNavigation
-import com.example.accesologin.ui.AccesoLoginApp
 import com.example.accesologin.ui.screens.LoginScreen
 import com.example.accesologin.ui.theme.AccesoLoginTheme
 
