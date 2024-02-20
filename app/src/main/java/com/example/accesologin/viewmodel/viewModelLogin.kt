@@ -30,15 +30,15 @@ class viewModelLogin(private val alumnosRepository: AlumnosRepository): ViewMode
 
     // obtener acceso a sice
     suspend fun getAccess(matricula: String, password: String): Boolean {
-        //val TAG = "VIEWMODEL"
-        //Log.d(TAG, matricula+", "+password+" = "+alumnosRepository.getAccess(matricula, password).toString())
-        return alumnosRepository.getAccess(matricula, password)
+        val TAG = "VIEWMODEL"
+        Log.d(TAG, matricula+", "+password+" = "+alumnosRepository.obtenerAcceso(matricula, password).toString())
+        return alumnosRepository.obtenerAcceso(matricula, password)
     }
 
     // obtener info de sice
     suspend fun getInfo(): String {
         val info = viewModelScope.async {
-            alumnosRepository.getInfo()
+            alumnosRepository.obtenerInfo()
         }
         return info.await()
     }

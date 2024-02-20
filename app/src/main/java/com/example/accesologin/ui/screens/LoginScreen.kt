@@ -125,8 +125,8 @@ private fun validacion(viewModel: viewModelLogin): Boolean {
 }
 
 suspend fun obtenerAcceso(viewModel: viewModelLogin): Boolean {
-    //val TAG = "HOLA"
-    //Log.d(TAG, viewModel.getAccess(viewModel.matricula, viewModel.password).toString())
+    val TAG = "LOGIN SCREEN"
+    Log.d(TAG, viewModel.getAccess(viewModel.matricula, viewModel.password).toString())
     return viewModel.getAccess(viewModel.matricula, viewModel.password)
 }
 

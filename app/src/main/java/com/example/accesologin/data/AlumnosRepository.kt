@@ -10,15 +10,15 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 interface AlumnosRepository {
-    suspend fun getAccess(matricula: String, password: String): Boolean
-    suspend fun getInfo(): String
+    suspend fun obtenerAcceso(matricula: String, password: String): Boolean
+    suspend fun obtenerInfo(): String
 }
 
 class NetworkAlumnosRepository(
     private val alumnoApiService: SiceApiService,
     private val infoService: InfoService
 ): AlumnosRepository {
-    override suspend fun getAccess(matricula: String, password: String): Boolean {
+    override suspend fun obtenerAcceso(matricula: String, password: String): Boolean {
         val xml = """
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
               <soap:Body>
@@ -32,22 +32,24 @@ class NetworkAlumnosRepository(
             """.trimIndent()
         val requestBody=xml.toRequestBody()
         alumnoApiService.getCookies()
+        val TAG = "REPOSITORY"
         try {
             var respuesta=alumnoApiService.getAccess(requestBody).string().split("{","}")
             if(respuesta.size>1){
                 val result = Gson().fromJson("{"+respuesta[1]+"}", Acceso::class.java)
-                //val TAG = "REPOSITORY"
-                //Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
+                Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
                 return result.acceso.equals("true")
             } else {
+                Log.d(TAG, "ENTRO AL ELSE Y ES: false")
                 return false
             }
         }catch (e:IOException){
+            Log.d(TAG, "ENTRO AL EXCEPTION Y ES: false")
             return false
         }
     }
 
-    override suspend fun getInfo() : String{
+    override suspend fun obtenerInfo() : String{
         val xml = """
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
               <soap:Body>
