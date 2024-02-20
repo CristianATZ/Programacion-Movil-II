@@ -1,14 +1,18 @@
 package com.example.accesologin.ui.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,79 +22,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.accesologin.navigation.AppScreens
+import com.example.accesologin.viewmodel.viewModelLogin
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-) {
-    ResultScreen(
-        loginViewModel,
-        modifier.padding(top = contentPadding.calculateTopPadding()),
-        navController
-    )
-}
-
-@Composable
-fun ResultScreen(loginViewModel: LoginViewModel, modifier: Modifier = Modifier, navController: NavController) {
-
-    val acceso by loginViewModel.uiState.collectAsState()
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-    ) {
-        //Text(text = acceso.acceso)
-
-        if(acceso.acceso.contains("<accesoLoginResult>")){
-            val result = loginViewModel.convertXmlToJson(acceso.acceso)
-            if(!result.isJsonNull && result.get("acceso").toString().equals("true")){
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Text(text = result.get("matricula").toString())
-                    Text(text = result.get("estatus").toString())
-                }
-            }
-            else{
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Text(text = "Usuario y/o contrasenia incorrecta. Intente de nuevo.")
-                    Button(
-                        onClick = {
-                            navController.navigate(AppScreens.LoginScreen.route)
-                        }
-                    ) {
-                        Text("Volver")
-                    }
-                }
-            }
-        } else if(acceso.acceso.equals("Cargando...")){
-            Text(text = "Cargando...")
-        } else {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Text(text = "Usuario y/o contrasenia incorrecta. Intente de nuevo.")
-                Button(
-                    onClick = {
-                        navController.navigate(AppScreens.LoginScreen.route)
-                    }
-                ) {
-                    Text("Volver")
-                }
-            }
+    text: String?
+){
+    val estudiante = text?.split("(", ")")?.get(1)?.split(",")
+    Scaffold {
+        Column(
+            modifier = Modifier
+                .padding(7.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(80.dp))
+            Text(text = "Nombre: "+estudiante?.get(0)?.split("=")?.get(1))
+            Text(text = "Semestre actual: " + estudiante?.get(2)?.split("=")?.get(1))
+            Text(text = "Creditos acumulados: " + estudiante?.get(3)?.split("=")?.get(1))
+            Text(text = "Creditos actuales: " + estudiante?.get(4)?.split("=")?.get(1))
+            Text(text = "Carrera: " + estudiante?.get(5)?.split("=")?.get(1))
+            Text(text = "No. Control: " + estudiante?.get(6)?.split("=")?.get(1))
+            Text(text = estudiante?.get(7)?.split("=")?.get(1).toString())
         }
-
-
     }
 }

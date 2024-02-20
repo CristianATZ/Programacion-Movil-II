@@ -1,6 +1,7 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.accesologin.navigation.AppScreens
+import com.example.accesologin.viewmodel.viewModelLogin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,22 +44,12 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun LoginScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel
+    viewModel: viewModelLogin = androidx.lifecycle.viewmodel.compose.viewModel(factory = viewModelLogin.Factory)
 ){
-    var _matricula by remember { mutableStateOf("") }
-    var _password by remember { mutableStateOf("") }
     val _padding = 15.dp
-
-    val acceso by loginViewModel.uiState.collectAsState()
 
     var openDialog by remember {
         mutableStateOf(false)
-    }
-
-    if(openDialog) {
-        DialogLogin(){
-            openDialog = !openDialog
-        }
     }
 
     Scaffold(
@@ -89,9 +82,9 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(_padding),
-                    value = _matricula,
-                    onValueChange = { newText ->
-                        _matricula = newText
+                    value = viewModel.matricula,
+                    onValueChange = {
+                        viewModel.updateMatricula(it)
                     },
                     label = { Text("Numero de control") }
                 )
@@ -99,18 +92,24 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(_padding),
-                    value = _password,
-                    onValueChange = { value ->
-                        _password = value
+                    value = viewModel.password,
+                    onValueChange = {
+                        viewModel.updatePassword(it)
                     },
                     label = {
                         Text("Contraseña")
                     }
                 )
+                val scope = rememberCoroutineScope()
                 Button(
                     onClick = {
-                        loginViewModel.getAuth(_matricula,_password)
-                        navController.navigate(AppScreens.AccesoLoginApp.route)
+                        if(validacion(viewModel)){
+                            scope.launch {
+                                if(obtenerAcceso(viewModel)){
+                                    obtenerInfo(viewModel, navController)
+                                }
+                            }
+                        }
                     },
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
@@ -123,13 +122,18 @@ fun LoginScreen(
     }
 }
 
-@Composable
-fun DialogLogin(
-    onClick: () -> Unit
-) {
-    Dialog(onDismissRequest = { onClick() }) {
-        Card {
-            Text(text = "Datos incorrectos", modifier = Modifier.padding(16.dp))
-        }
-    }
+
+private fun validacion(viewModel: viewModelLogin): Boolean {
+    if(viewModel.matricula.equals("") || viewModel.password.equals("")) return false
+    return true
+}
+
+suspend fun obtenerAcceso(viewModel: viewModelLogin): Boolean {
+    return viewModel.getAccess(viewModel.matricula, viewModel.password)
+}
+
+suspend fun obtenerInfo(viewModel: viewModelLogin, navController: NavController){
+    var info = viewModel.getInfo()
+    var encodedInfo = Uri.encode(info)
+    navController.navigate(AppScreens.AccesoLoginApp.route + encodedInfo)
 }
