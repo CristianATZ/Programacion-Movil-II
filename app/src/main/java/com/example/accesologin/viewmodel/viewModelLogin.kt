@@ -44,8 +44,8 @@ class viewModelLogin(private val alumnosRepository: AlumnosRepository): ViewMode
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as AlumnosContainer)
-                val alumnosApplication = application.container.alumnosRepository
-                viewModelLogin(alumnosRepository = alumnosApplication)
+                val alumnosAplication = application.container.alumnosRepository
+                viewModelLogin(alumnosRepository = alumnosAplication)
             }
         }
     }

@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.viewModelLogin
@@ -44,13 +45,9 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: viewModelLogin = androidx.lifecycle.viewmodel.compose.viewModel(factory = viewModelLogin.Factory)
+    viewModel: viewModelLogin = viewModel(factory = viewModelLogin.Factory)
 ){
     val _padding = 15.dp
-
-    var openDialog by remember {
-        mutableStateOf(false)
-    }
 
     Scaffold(
         topBar ={
