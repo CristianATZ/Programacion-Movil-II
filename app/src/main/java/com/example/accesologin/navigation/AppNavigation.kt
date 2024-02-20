@@ -19,7 +19,7 @@ fun AppNavigation(){
             LoginScreen(navController)
         }
         composable(
-            AppScreens.AccesoLoginApp.route+"{text}",
+            AppScreens.HomeScreen.route+"{text}",
             arguments = listOf(navArgument(name = "text"){
                 type = NavType.StringType
             }

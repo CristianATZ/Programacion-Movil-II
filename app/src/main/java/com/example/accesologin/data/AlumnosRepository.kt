@@ -1,5 +1,6 @@
 package com.example.accesologin.data
 
+import android.util.Log
 import com.example.accesologin.model.Acceso
 import com.example.accesologin.model.Alumno
 import com.example.accesologin.network.repository.InfoService
@@ -17,7 +18,7 @@ class NetworkAlumnosRepository(
     private val alumnoApiService: SiceApiService,
     private val infoService: InfoService
 ): AlumnosRepository {
-    override suspend fun getAccess(matricula: String, password: String) : Boolean{
+    override suspend fun getAccess(matricula: String, password: String): Boolean {
         val xml = """
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
               <soap:Body>
@@ -31,14 +32,17 @@ class NetworkAlumnosRepository(
             """.trimIndent()
         val requestBody=xml.toRequestBody()
         alumnoApiService.getCookies()
-        return try {
-            var response = alumnoApiService.getAccess(requestBody).string().split("{","}")
-            if(response.size > 1){
-                val result = Gson().fromJson("{" + response[1] + "}", Acceso::class.java)
+        try {
+            var respuesta=alumnoApiService.getAccess(requestBody).string().split("{","}")
+            if(respuesta.size>1){
+                val result = Gson().fromJson("{"+respuesta[1]+"}", Acceso::class.java)
+                //val TAG = "REPOSITORY"
+                //Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
                 return result.acceso.equals("true")
-            } else
+            } else {
                 return false
-        } catch (e: IOException){
+            }
+        }catch (e:IOException){
             return false
         }
     }
@@ -52,8 +56,9 @@ class NetworkAlumnosRepository(
             </soap:Envelope>
             """.trimIndent()
         val requestBody=xml.toRequestBody()
-        return try {
+        try {
             val respuestaInfo= infoService.getInfo(requestBody).string().split("{","}")
+            //Log.d(TAG, respuestaInfo.toString())
             if(respuestaInfo.size>1){
                 val result = Gson().fromJson("{"+respuestaInfo[1]+"}", Alumno::class.java)
                 return "" + result

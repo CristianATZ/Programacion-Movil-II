@@ -1,5 +1,6 @@
 package com.example.accesologin.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -29,6 +30,8 @@ class viewModelLogin(private val alumnosRepository: AlumnosRepository): ViewMode
 
     // obtener acceso a sice
     suspend fun getAccess(matricula: String, password: String): Boolean {
+        //val TAG = "VIEWMODEL"
+        //Log.d(TAG, matricula+", "+password+" = "+alumnosRepository.getAccess(matricula, password).toString())
         return alumnosRepository.getAccess(matricula, password)
     }
 

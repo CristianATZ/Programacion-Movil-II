@@ -121,16 +121,17 @@ fun LoginScreen(
 
 
 private fun validacion(viewModel: viewModelLogin): Boolean {
-    if(viewModel.matricula.equals("") || viewModel.password.equals("")) return false
-    return true
+    return !viewModel.matricula.equals("") && !viewModel.password.equals("")
 }
 
 suspend fun obtenerAcceso(viewModel: viewModelLogin): Boolean {
+    //val TAG = "HOLA"
+    //Log.d(TAG, viewModel.getAccess(viewModel.matricula, viewModel.password).toString())
     return viewModel.getAccess(viewModel.matricula, viewModel.password)
 }
 
 suspend fun obtenerInfo(viewModel: viewModelLogin, navController: NavController){
     var info = viewModel.getInfo()
     var encodedInfo = Uri.encode(info)
-    navController.navigate(AppScreens.AccesoLoginApp.route + encodedInfo)
+    navController.navigate(AppScreens.HomeScreen.route + encodedInfo)
 }
