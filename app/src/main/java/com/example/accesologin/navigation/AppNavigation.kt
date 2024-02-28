@@ -7,8 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.accesologin.ui.screens.AcademicScheduleScreen
+import com.example.accesologin.ui.screens.CardexScreen
+import com.example.accesologin.ui.screens.FinalsCalifScreen
 import com.example.accesologin.ui.screens.HomeScreen
 import com.example.accesologin.ui.screens.LoginScreen
+import com.example.accesologin.ui.screens.UnitsCalifScreen
 
 @Composable
 fun AppNavigation(){
@@ -25,6 +29,18 @@ fun AppNavigation(){
             }
         )){
             HomeScreen(navController, it.arguments?.getString("text"))
+        }
+        composable(AppScreens.AcademicScheduleScreen.route){
+            AcademicScheduleScreen(navController)
+        }
+        composable(AppScreens.CardexScreen.route){
+            CardexScreen(navController)
+        }
+        composable(AppScreens.UnitsCalifScreen.route){
+            UnitsCalifScreen(navController)
+        }
+        composable(AppScreens.FinalsCalifScreen.route){
+            FinalsCalifScreen(navController)
         }
     }
 }

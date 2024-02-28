@@ -16,19 +16,35 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.HistoryEdu
+import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +66,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
@@ -71,80 +88,155 @@ fun HomeScreen(
         DialogCloseSesion()
     }
 
-    Scaffold {
-        Column(
-            modifier = Modifier
-                .padding(7.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-            Spacer(modifier = Modifier.size(32.dp))
-            
-            Column(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onBackground),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = estudiante?.get(0)?.split("=")?.get(1).toString().substring(0,1),
-                    color = MaterialTheme.colorScheme.background,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 64.sp
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Menu",
+                        fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Carga Académica") },
+                        icon = { Icon(Icons.Outlined.Schedule, null) },
+                        selected = false,
+                        onClick = { navController.navigate(AppScreens.AcademicScheduleScreen.route) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Cardex") },
+                        icon = { Icon(Icons.Outlined.HistoryEdu, null) },
+                        selected = false,
+                        onClick = { navController.navigate(AppScreens.CardexScreen.route) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Calificaciones por unidad") },
+                        icon = { Icon(Icons.Outlined.School, null) },
+                        selected = false,
+                        onClick = { navController.navigate(AppScreens.UnitsCalifScreen.route) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Calificaciones finales") },
+                        icon = { Icon(Icons.Outlined.School, null) },
+                        selected = false,
+                        onClick = { navController.navigate(AppScreens.FinalsCalifScreen.route) }
+                    )
+                }
+            }
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    navigationIcon = {
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    drawerState.apply {
+                                        if(isClosed) open()
+                                        else close()
+                                    }
+                                }
+                            }
+                        ) {
+                            Icon(Icons.Default.Menu, contentDescription = null)
+                        }
+                    },
+                    title = { 
+                        Text(
+                            text = "Bienvenido",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor =MaterialTheme.colorScheme.primary
+                    )
                 )
             }
-            
-            Spacer(modifier = Modifier.size(16.dp))
-            
-            Text(
-                text = estudiante?.get(0)?.split("=")?.get(1).toString(), 
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
-                lineHeight = 34.sp,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = estudiante?.get(5)?.split("=")?.get(1).toString(),
-                fontSize = 16.sp,
-                textDecoration = TextDecoration.Underline
-            )
-            
-            Spacer(modifier = Modifier.size(8.dp))
-
-            Text(text = estudiante?.get(7)?.split("=")?.get(1).toString())
-            
-            Spacer(modifier = Modifier.size(32.dp))
-            Divider()
-            Spacer(modifier = Modifier.size(32.dp))
-
-
-            AtributoAlumno("Semestre actual:", estudiante?.get(2)?.split("=")?.get(1).toString())
-
-            AtributoAlumno("Creditos acumualdos:", estudiante?.get(3)?.split("=")?.get(1).toString())
-
-            AtributoAlumno("No. Control:", estudiante?.get(6)?.split("=")?.get(1).toString())
-
-            Spacer(modifier = Modifier.size(32.dp))
-            Divider()
-            Spacer(modifier = Modifier.size(32.dp))
-
-
-            Button(
-                onClick = {
-                    openCloseSesion = !openCloseSesion
-                },
-                shape = RoundedCornerShape(8.dp),
+        ) {
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth(0.9f)
-                    .padding()
+                    .padding(7.dp, top = 40.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Cerrar sesion", modifier = Modifier.padding(PaddingValues(4.dp)))
+
+                Spacer(modifier = Modifier.size(32.dp))
+
+                Column(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.onBackground),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = estudiante?.get(0)?.split("=")?.get(1).toString().substring(0,1),
+                        color = MaterialTheme.colorScheme.background,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 64.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.size(16.dp))
+
+                Text(
+                    text = estudiante?.get(0)?.split("=")?.get(1).toString(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    lineHeight = 34.sp,
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = estudiante?.get(5)?.split("=")?.get(1).toString(),
+                    fontSize = 16.sp,
+                    textDecoration = TextDecoration.Underline
+                )
+
+                Spacer(modifier = Modifier.size(8.dp))
+
+                Text(text = estudiante?.get(7)?.split("=")?.get(1).toString())
+
+                Spacer(modifier = Modifier.size(32.dp))
+                Divider()
+                Spacer(modifier = Modifier.size(32.dp))
+
+
+                AtributoAlumno("Semestre actual:", estudiante?.get(2)?.split("=")?.get(1).toString())
+
+                AtributoAlumno("Creditos acumualdos:", estudiante?.get(3)?.split("=")?.get(1).toString())
+
+                AtributoAlumno("No. Control:", estudiante?.get(6)?.split("=")?.get(1).toString())
+
+                Spacer(modifier = Modifier.size(32.dp))
+                Divider()
+                Spacer(modifier = Modifier.size(32.dp))
+
+
+                Button(
+                    onClick = {
+                        openCloseSesion = !openCloseSesion
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(0.9f)
+                        .padding()
+                ) {
+                    Text(text = "Cerrar sesion", modifier = Modifier.padding(PaddingValues(4.dp)))
+                }
             }
         }
     }
