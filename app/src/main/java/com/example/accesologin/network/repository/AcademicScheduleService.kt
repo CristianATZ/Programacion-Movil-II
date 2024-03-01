@@ -6,17 +6,16 @@ import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
-interface InfoService {
+interface AcademicScheduleService {
     // Encabezados
     @Headers(
         "Content-Type: text/xml",
-        "SOAPAction: \"http://tempuri.org/getAlumnoAcademicoWithLineamiento\""
+        "SOAPAction: \"http://tempuri.org/getCargaAcademicaByAlumno\""
     )
 
-    // POST para traer información del usuario
+    // POST para obtener la carga academica
     @POST("ws/wsalumnos.asmx")
-    suspend fun getInfo(
+    suspend fun getAcademicSchedule(
         @Body requestBody: RequestBody
     ): ResponseBody
-
 }

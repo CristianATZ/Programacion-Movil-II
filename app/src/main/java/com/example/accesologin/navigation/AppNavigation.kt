@@ -30,8 +30,13 @@ fun AppNavigation(){
         )){
             HomeScreen(navController, it.arguments?.getString("text"))
         }
-        composable(AppScreens.AcademicScheduleScreen.route){
-            AcademicScheduleScreen(navController)
+        composable(
+            AppScreens.AcademicScheduleScreen.route+"{text}",
+            arguments = listOf(navArgument(name = "text"){
+                type = NavType.StringType
+            })
+        ){
+            AcademicScheduleScreen(navController, it.arguments?.getString("text"))
         }
         composable(AppScreens.CardexScreen.route){
             CardexScreen(navController)

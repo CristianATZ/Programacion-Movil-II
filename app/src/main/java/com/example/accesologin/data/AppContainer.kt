@@ -1,5 +1,6 @@
 package com.example.accesologin.data
 
+import com.example.accesologin.network.repository.AcademicScheduleService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -7,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.SiceApiService
+import retrofit2.create
 
 interface AppContainer {
     val alumnosRepository: AlumnosRepository
@@ -33,8 +35,12 @@ class DefaultAppContainer: AppContainer {
         retrofit.create(InfoService::class.java)
     }
 
+    private val retrofitAcademicScheduleService : AcademicScheduleService by lazy {
+        retrofit.create(AcademicScheduleService::class.java)
+    }
+
     override val alumnosRepository: AlumnosRepository by lazy {
-        NetworkAlumnosRepository(retrofitService, retrofitServiceInfo)
+        NetworkAlumnosRepository(retrofitService, retrofitServiceInfo, retrofitAcademicScheduleService)
     }
 }
 

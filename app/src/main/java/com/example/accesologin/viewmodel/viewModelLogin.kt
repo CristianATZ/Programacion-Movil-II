@@ -42,6 +42,7 @@ class viewModelLogin(private val alumnosRepository: AlumnosRepository): ViewMode
         }
         return info.await()
     }
+    
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

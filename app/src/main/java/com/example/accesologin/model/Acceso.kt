@@ -24,3 +24,24 @@ data class Alumno (
     var estatus:String="",
     var lineamiento:Int=0,
 )
+
+data class Carga(
+    var semipresencial: String,
+    var observaciones: String,
+    var docente: String,
+    var clvOficial: String,
+    var sabado: String,
+    var viernes: String,
+    var jueves: String,
+    var miercoles: String,
+    var martes: String,
+    var lunes: String,
+    var estadoMateria: String,
+    var creditosMateria: String,
+    var materia: String,
+    var grupo: String
+)
+
+data class ListaCarga(
+    var carga: List<Carga>
+)

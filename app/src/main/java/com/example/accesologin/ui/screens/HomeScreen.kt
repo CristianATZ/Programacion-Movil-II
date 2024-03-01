@@ -1,6 +1,7 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -59,19 +60,25 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.navigation.AppScreens
+import com.example.accesologin.viewmodel.viewModelAcademicSchedule
 import com.example.accesologin.viewmodel.viewModelLogin
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     navController: NavController,
-    text: String?
+    text: String?,
+    viewModelAcademic: viewModelAcademicSchedule = viewModel(factory = viewModelAcademicSchedule.Factory)
 ){
     val estudiante = text?.split("(", ")")?.get(1)?.split(",")
 
@@ -106,11 +113,20 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(top = 10.dp)
                     )
+                    val scope = rememberCoroutineScope()
                     NavigationDrawerItem(
                         label = { Text("Carga Académica") },
                         icon = { Icon(Icons.Outlined.Schedule, null) },
                         selected = false,
-                        onClick = { navController.navigate(AppScreens.AcademicScheduleScreen.route) }
+                        onClick = {
+                            try {
+                                scope.launch {
+                                    obtenerCargaAcademica(viewModelAcademic, navController)
+                                }
+                            } catch(e: IOException){
+                                navController.navigate(AppScreens.AcademicScheduleScreen.route + "carga academica")
+                            }
+                        }
                     )
                     NavigationDrawerItem(
                         label = { Text("Cardex") },
@@ -281,4 +297,12 @@ fun AtributoAlumno(header: String, body: String) {
             fontWeight = FontWeight.Bold
         )
     }
+}
+
+suspend fun obtenerCargaAcademica(viewModel: viewModelAcademicSchedule, navController: NavController){
+    val TAG = "HOME SCREEN"
+    Log.d(TAG, "Invocando obtenerCargaAcademica")
+    var schedule = viewModel.getAcademicSchedule()
+    var encodedInfo = Uri.encode(schedule)
+    navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
 }

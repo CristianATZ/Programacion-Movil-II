@@ -3,6 +3,9 @@ package com.example.accesologin.data
 import android.util.Log
 import com.example.accesologin.model.Acceso
 import com.example.accesologin.model.Alumno
+import com.example.accesologin.model.Carga
+import com.example.accesologin.model.ListaCarga
+import com.example.accesologin.network.repository.AcademicScheduleService
 import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.SiceApiService
 import com.google.gson.Gson
@@ -12,11 +15,13 @@ import java.io.IOException
 interface AlumnosRepository {
     suspend fun obtenerAcceso(matricula: String, password: String): Boolean
     suspend fun obtenerInfo(): String
+    suspend fun obtenerCarga(): String
 }
 
 class NetworkAlumnosRepository(
     private val alumnoApiService: SiceApiService,
-    private val infoService: InfoService
+    private val infoService: InfoService,
+    private val academicScheduleService: AcademicScheduleService
 ): AlumnosRepository {
     override suspend fun obtenerAcceso(matricula: String, password: String): Boolean {
         val xml = """
@@ -67,6 +72,34 @@ class NetworkAlumnosRepository(
             } else
                 return ""
         }catch (e:IOException){
+            return ""
+        }
+    }
+
+
+    override suspend fun obtenerCarga(): String {
+        val TAG = "REPOSITORY"
+        val xml = """
+            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+              <soap:Body>
+                <getCargaAcademicaByAlumno xmlns="http://tempuri.org/" />
+              </soap:Body>
+            </soap:Envelope>
+        """.trimIndent()
+        val requestBody = xml.toRequestBody()
+        try {
+            val respuestaInfo = academicScheduleService.getAcademicSchedule(requestBody).string()
+            Log.d(TAG,respuestaInfo)
+            /*
+            if(respuestaInfo.size > 1){
+                //val result = Gson().fromJson("["+respuestaInfo[1]+"]", ListaCarga::class.java)
+
+                return "" //
+            } else
+                return ""
+                */
+             return ""
+        } catch (e: IOException){
             return ""
         }
     }
