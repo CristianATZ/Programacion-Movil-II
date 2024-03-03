@@ -21,6 +21,15 @@ class viewModelAcademicSchedule(private val alumnosRepository: AlumnosRepository
         return schedule.await()
     }
 
+    suspend fun getCalifByUnidad() : String {
+        val TAG = "VIEWMODEL"
+        Log.d(TAG, "ENTRANDO AL VIEWMODEL")
+        val schedule = viewModelScope.async{
+            alumnosRepository.obtenerCalificaciones()
+        }
+        return schedule.await()
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

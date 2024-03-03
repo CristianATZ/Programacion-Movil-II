@@ -69,4 +69,3 @@ fun parseCargaList(input: String): List<Carga> {
             )
         }.toList()
 }
-

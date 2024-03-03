@@ -134,7 +134,12 @@ fun HomeScreen(
                         label = { Text("Calificaciones por unidad") },
                         icon = { Icon(Icons.Outlined.School, null) },
                         selected = false,
-                        onClick = { navController.navigate(AppScreens.UnitsCalifScreen.route) }
+                        onClick = {
+                            scope.launch {
+                                obtenerCalificaciones(viewModelAcademic, navController)
+                            }
+                            //navController.navigate(AppScreens.UnitsCalifScreen.route)
+                        }
                     )
                     NavigationDrawerItem(
                         label = { Text("Calificaciones finales") },
@@ -301,4 +306,12 @@ suspend fun obtenerCargaAcademica(viewModel: viewModelAcademicSchedule, navContr
     var schedule = viewModel.getAcademicSchedule()
     var encodedInfo = Uri.encode(schedule)
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
+}
+
+suspend fun obtenerCalificaciones(viewModel: viewModelAcademicSchedule, navController: NavController){
+    val TAG = "HOME SCREEN"
+    Log.d(TAG, "Invocando obtenerCalififcaciones")
+    var unidades = viewModel.getCalifByUnidad()
+    var encodedInfo = Uri.encode(unidades)
+    navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
 }

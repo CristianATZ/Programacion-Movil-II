@@ -22,6 +22,7 @@ fun AppNavigation(){
         composable(AppScreens.LoginScreen.route){
             LoginScreen(navController)
         }
+
         composable(
             AppScreens.HomeScreen.route+"{text}",
             arguments = listOf(navArgument(name = "text"){
@@ -30,6 +31,7 @@ fun AppNavigation(){
         )){
             HomeScreen(navController, it.arguments?.getString("text"))
         }
+
         composable(
             AppScreens.AcademicScheduleScreen.route+"{text}",
             arguments = listOf(navArgument(name = "text"){
@@ -38,12 +40,20 @@ fun AppNavigation(){
         ){
             AcademicScheduleScreen(navController, it.arguments?.getString("text"))
         }
+
         composable(AppScreens.CardexScreen.route){
             CardexScreen(navController)
         }
-        composable(AppScreens.UnitsCalifScreen.route){
-            UnitsCalifScreen(navController)
+
+        composable(
+            AppScreens.UnitsCalifScreen.route+"{text}",
+            arguments = listOf(navArgument(name = "text"){
+              type = NavType.StringType
+            })
+        ){
+            UnitsCalifScreen(navController, it.arguments?.getString("text"))
         }
+
         composable(AppScreens.FinalsCalifScreen.route){
             FinalsCalifScreen(navController)
         }

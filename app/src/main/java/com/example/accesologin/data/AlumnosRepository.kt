@@ -3,13 +3,13 @@ package com.example.accesologin.data
 import android.util.Log
 import com.example.accesologin.model.Acceso
 import com.example.accesologin.model.Alumno
+import com.example.accesologin.model.CalificacionByUnidad
 import com.example.accesologin.model.Carga
 import com.example.accesologin.network.repository.AcademicScheduleService
+import com.example.accesologin.network.repository.CalificacionesService
 import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.SiceApiService
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import kotlinx.serialization.json.Json
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
@@ -17,12 +17,14 @@ interface AlumnosRepository {
     suspend fun obtenerAcceso(matricula: String, password: String): Boolean
     suspend fun obtenerInfo(): String
     suspend fun obtenerCarga(): String
+    suspend fun obtenerCalificaciones() : String
 }
 
 class NetworkAlumnosRepository(
     private val alumnoApiService: SiceApiService,
     private val infoService: InfoService,
-    private val academicScheduleService: AcademicScheduleService
+    private val academicScheduleService: AcademicScheduleService,
+    private val calificacionesService: CalificacionesService
 ): AlumnosRepository {
     override suspend fun obtenerAcceso(matricula: String, password: String): Boolean {
         val xml = """
@@ -78,7 +80,6 @@ class NetworkAlumnosRepository(
         }
     }
 
-
     override suspend fun obtenerCarga(): String {
         val TAG = "REPOSITORY"
         val xml = """
@@ -104,6 +105,38 @@ class NetworkAlumnosRepository(
             } else
                 return ""
              return ""
+        } catch (e: IOException){
+            return ""
+        }
+    }
+
+    override suspend fun obtenerCalificaciones(): String {
+        val TAG = "REPOSITORY"
+        val xml = """
+            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <soap:Body>
+                    <getCalifUnidadesByAlumno xmlns="http://tempuri.org/" />
+                </soap:Body>
+            </soap:Envelope>
+        """.trimIndent()
+        val requestBody = xml.toRequestBody()
+        try {
+            val respuestaInfo = calificacionesService.getCalifUnidadesByAlumno(requestBody).string().split("{","}")
+            //Log.d("asdasd", respuestaInfo.toString())
+            if(respuestaInfo.size > 1){
+                val arreglo = mutableListOf<CalificacionByUnidad>()
+                for(calificaciones in respuestaInfo){
+                    if(calificaciones.contains("Materia")){
+                        val objCalif = Gson().fromJson("{"+calificaciones+"}", CalificacionByUnidad::class.java)
+                        Log.d("asdasd", objCalif.toString())
+                        arreglo.add(objCalif)
+                    }
+                }
+                //Log.d("asdasd", arreglo.toString())
+                return ""+arreglo
+            } else
+                return ""
+            return ""
         } catch (e: IOException){
             return ""
         }
