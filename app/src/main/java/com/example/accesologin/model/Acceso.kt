@@ -26,22 +26,18 @@ data class Alumno (
 )
 
 data class Carga(
-    var semipresencial: String,
-    var observaciones: String,
-    var docente: String,
+    var Semipresencial: String,
+    var Observaciones: String,
+    var Docente: String,
     var clvOficial: String,
-    var sabado: String,
-    var viernes: String,
-    var jueves: String,
-    var miercoles: String,
-    var martes: String,
-    var lunes: String,
-    var estadoMateria: String,
-    var creditosMateria: String,
-    var materia: String,
-    var grupo: String
-)
-
-data class ListaCarga(
-    var carga: List<Carga>
+    var Sabado: String,
+    var Viernes: String,
+    var Jueves: String,
+    var Miercoles: String,
+    var Martes: String,
+    var Lunes: String,
+    var EstadoMateria: String,
+    var CreditosMateria: String,
+    var Materia: String,
+    var Grupo: String
 )

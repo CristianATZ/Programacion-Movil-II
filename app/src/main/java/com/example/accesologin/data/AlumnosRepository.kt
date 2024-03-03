@@ -4,11 +4,12 @@ import android.util.Log
 import com.example.accesologin.model.Acceso
 import com.example.accesologin.model.Alumno
 import com.example.accesologin.model.Carga
-import com.example.accesologin.model.ListaCarga
 import com.example.accesologin.network.repository.AcademicScheduleService
 import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.SiceApiService
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.serialization.json.Json
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
@@ -67,6 +68,7 @@ class NetworkAlumnosRepository(
             val respuestaInfo= infoService.getInfo(requestBody).string().split("{","}")
             //Log.d(TAG, respuestaInfo.toString())
             if(respuestaInfo.size>1){
+                //Log.d("REPOSITORY", respuestaInfo[1])
                 val result = Gson().fromJson("{"+respuestaInfo[1]+"}", Alumno::class.java)
                 return "" + result
             } else
@@ -89,10 +91,15 @@ class NetworkAlumnosRepository(
         val requestBody = xml.toRequestBody()
         try {
             val respuestaInfo = academicScheduleService.getAcademicSchedule(requestBody).string().split("{","}")
-            //Log.d(TAG,respuestaInfo)
             if(respuestaInfo.size > 1){
-                //val result = Gson().fromJson("["+respuestaInfo[1]+"]", ListaCarga::class.java)
-                return ""+respuestaInfo //
+                val arreglo = mutableListOf<Carga>()
+                for(carga in respuestaInfo){
+                    if(carga.contains("Materia")){
+                        val objCarga = Gson().fromJson("{"+carga+"}", Carga::class.java)
+                        arreglo.add(objCarga)
+                    }
+                }
+                return ""+arreglo
             } else
                 return ""
              return ""
