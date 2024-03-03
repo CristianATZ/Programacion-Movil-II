@@ -119,12 +119,8 @@ fun HomeScreen(
                         icon = { Icon(Icons.Outlined.Schedule, null) },
                         selected = false,
                         onClick = {
-                            try {
-                                scope.launch {
-                                    obtenerCargaAcademica(viewModelAcademic, navController)
-                                }
-                            } catch(e: IOException){
-                                navController.navigate(AppScreens.AcademicScheduleScreen.route + "carga academica")
+                            scope.launch {
+                                obtenerCargaAcademica(viewModelAcademic, navController)
                             }
                         }
                     )

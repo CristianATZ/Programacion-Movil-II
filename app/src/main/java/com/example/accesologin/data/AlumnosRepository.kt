@@ -88,16 +88,13 @@ class NetworkAlumnosRepository(
         """.trimIndent()
         val requestBody = xml.toRequestBody()
         try {
-            val respuestaInfo = academicScheduleService.getAcademicSchedule(requestBody).string()
-            Log.d(TAG,respuestaInfo)
-            /*
+            val respuestaInfo = academicScheduleService.getAcademicSchedule(requestBody).string().split("{","}")
+            //Log.d(TAG,respuestaInfo)
             if(respuestaInfo.size > 1){
                 //val result = Gson().fromJson("["+respuestaInfo[1]+"]", ListaCarga::class.java)
-
-                return "" //
+                return ""+respuestaInfo //
             } else
                 return ""
-                */
              return ""
         } catch (e: IOException){
             return ""

@@ -34,8 +34,8 @@ fun AppNavigation(){
             AppScreens.AcademicScheduleScreen.route+"{text}",
             arguments = listOf(navArgument(name = "text"){
                 type = NavType.StringType
-            })
-        ){
+            }
+        )){
             AcademicScheduleScreen(navController, it.arguments?.getString("text"))
         }
         composable(AppScreens.CardexScreen.route){

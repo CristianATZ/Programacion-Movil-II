@@ -14,8 +14,6 @@ fun AcademicScheduleScreen(
     navController: NavController,
     text: String?
 ){
-    val carga = text?.split("(", ")")?.get(1)?.split(",")
-    Text(text = carga?.get(0)?.split("=")?.get(1).toString())
-    Text(text = carga?.get(1)?.split("=")?.get(1).toString())
+    Text(text = text.toString())
 }
 

@@ -45,35 +45,38 @@ class DefaultAppContainer: AppContainer {
 }
 
 
-class CookiesInterceptor: Interceptor {
-    // Variable que almacena las cookies
-    private var cookies: List<String> = emptyList()
-    // Método para establecer las cookies
-    fun setCookies(cookies: List<String>) {
-        this.cookies = cookies
-    }
+class CookiesInterceptor : Interceptor {
+    // Map para guardar la cookie
+    private val cookieStore = mutableMapOf<String, String>()
+
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-        // Agregar las cookies al encabezado de la solicitud
-        if (cookies.isNotEmpty()) {
-            val cookiesHeader = StringBuilder()
-            for (cookie in cookies) {
-                if (cookiesHeader.isNotEmpty()) {
-                    cookiesHeader.append("; ")
-                }
-                cookiesHeader.append(cookie)
+
+        // Agregar la cookie al encabezado de la solicitud
+        val cookiesHeader = StringBuilder()
+        for ((name, value) in cookieStore) {
+            if (cookiesHeader.isNotEmpty()) {
+                cookiesHeader.append("; ")
             }
+            cookiesHeader.append("$name=$value")
+        }
+
+        if (cookiesHeader.isNotEmpty()) {
             request = request.newBuilder()
                 .header("Cookie", cookiesHeader.toString())
                 .build()
         }
-
         val response = chain.proceed(request)
 
-        // Almacenar las cookies de la respuesta para futuras solicitudes
+        // Almacenar la cookiea para futuras solicitudes
         val receivedCookies = response.headers("Set-Cookie")
-        if (receivedCookies.isNotEmpty()) {
-            setCookies(receivedCookies)
+        for (cookie in receivedCookies) {
+            val parts = cookie.split(";")[0].split("=")
+            if (parts.size == 2) {
+                val name = parts[0]
+                val value = parts[1]
+                cookieStore[name] = value
+            }
         }
 
         return response
