@@ -99,6 +99,7 @@ class NetworkAlumnosRepository(
                         arreglo.add(objCarga)
                     }
                 }
+                Log.d(TAG, arreglo.toString())
                 return ""+arreglo
             } else
                 return ""
