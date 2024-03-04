@@ -1,8 +1,6 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.res.Resources.Theme
-import android.media.effect.Effect
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -12,11 +10,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.Lock
@@ -32,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,19 +38,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.navigation.AppScreens
-import com.example.accesologin.viewmodel.viewModelLogin
+import com.example.accesologin.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -65,7 +56,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: viewModelLogin = viewModel(factory = viewModelLogin.Factory)
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ){
     val _padding = 15.dp
 
@@ -242,17 +233,17 @@ fun DialogError(onClick: () -> Unit) {
 }
 
 
-private fun validacion(viewModel: viewModelLogin): Boolean {
+private fun validacion(viewModel: LoginViewModel): Boolean {
     return !viewModel.matricula.equals("") && !viewModel.password.equals("")
 }
 
-suspend fun obtenerAcceso(viewModel: viewModelLogin): Boolean {
+suspend fun obtenerAcceso(viewModel: LoginViewModel): Boolean {
     val TAG = "LOGIN SCREEN"
     Log.d(TAG, viewModel.getAccess(viewModel.matricula, viewModel.password).toString())
     return viewModel.getAccess(viewModel.matricula, viewModel.password)
 }
 
-suspend fun obtenerInfo(viewModel: viewModelLogin, navController: NavController){
+suspend fun obtenerInfo(viewModel: LoginViewModel, navController: NavController){
     var info = viewModel.getInfo()
     var encodedInfo = Uri.encode(info)
     navController.navigate(AppScreens.HomeScreen.route + encodedInfo)

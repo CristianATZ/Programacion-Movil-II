@@ -9,6 +9,7 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import com.example.accesologin.network.repository.InfoService
+import com.example.accesologin.network.repository.KardexService
 import com.example.accesologin.network.repository.SiceApiService
 import retrofit2.create
 
@@ -49,13 +50,18 @@ class DefaultAppContainer: AppContainer {
         retrofit.create(CalifFinalesService::class.java)
     }
 
+    private val retrofitKardexConPromedioByAlumno: KardexService by lazy {
+        retrofit.create(KardexService::class.java)
+    }
+
     override val alumnosRepository: AlumnosRepository by lazy {
         NetworkAlumnosRepository(
             retrofitService,
             retrofitServiceInfo,
             retrofitAcademicScheduleService,
             retrofitCalificacionesByUnidad,
-            retrofitCalifFinals
+            retrofitCalifFinals,
+            retrofitKardexConPromedioByAlumno
         )
     }
 }

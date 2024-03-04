@@ -14,7 +14,7 @@ import kotlinx.coroutines.async
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import com.example.accesologin.AlumnosContainer
 
-class viewModelLogin(private val alumnosRepository: AlumnosRepository): ViewModel() {
+class LoginViewModel(private val alumnosRepository: AlumnosRepository): ViewModel() {
     var matricula by mutableStateOf("")
     var password by mutableStateOf("")
 
@@ -49,7 +49,7 @@ class viewModelLogin(private val alumnosRepository: AlumnosRepository): ViewMode
             initializer {
                 val application = (this[APPLICATION_KEY] as AlumnosContainer)
                 val alumnosAplication = application.container.alumnosRepository
-                viewModelLogin(alumnosRepository = alumnosAplication)
+                LoginViewModel(alumnosRepository = alumnosAplication)
             }
         }
     }

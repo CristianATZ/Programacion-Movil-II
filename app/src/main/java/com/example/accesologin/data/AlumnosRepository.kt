@@ -5,11 +5,14 @@ import com.example.accesologin.model.Acceso
 import com.example.accesologin.model.Alumno
 import com.example.accesologin.model.CalifFinal
 import com.example.accesologin.model.CalificacionByUnidad
+import com.example.accesologin.model.Cardex
+import com.example.accesologin.model.CardexProm
 import com.example.accesologin.model.Carga
 import com.example.accesologin.network.repository.AcademicScheduleService
 import com.example.accesologin.network.repository.CalifFinalesService
 import com.example.accesologin.network.repository.CalificacionesService
 import com.example.accesologin.network.repository.InfoService
+import com.example.accesologin.network.repository.KardexService
 import com.example.accesologin.network.repository.SiceApiService
 import com.google.gson.Gson
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -21,6 +24,7 @@ interface AlumnosRepository {
     suspend fun obtenerCarga(): String
     suspend fun obtenerCalificaciones() : String
     suspend fun obtenerCalifFinales(): String
+    suspend fun obtenerCardex() : String
 }
 
 class NetworkAlumnosRepository(
@@ -28,7 +32,8 @@ class NetworkAlumnosRepository(
     private val infoService: InfoService,
     private val academicScheduleService: AcademicScheduleService,
     private val calificacionesService: CalificacionesService,
-    private val califFinales: CalifFinalesService
+    private val califFinales: CalifFinalesService,
+    private val alumnoCardex: KardexService
 ): AlumnosRepository {
     override suspend fun obtenerAcceso(matricula: String, password: String): Boolean {
         val xml = """
@@ -172,6 +177,44 @@ class NetworkAlumnosRepository(
                 }
                 //Log.d("asdasd", arreglo.toString())
                 return ""+arreglo
+            } else
+                return ""
+            return ""
+        } catch (e: IOException){
+            return ""
+        }
+    }
+
+    override suspend fun obtenerCardex(): String {
+        val xml = """
+            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <soap:Body>
+                    <getAllKardexConPromedioByAlumno xmlns="http://tempuri.org/">
+                        <aluLineamiento>2</aluLineamiento>
+                    </getAllKardexConPromedioByAlumno>
+                </soap:Body>
+            </soap:Envelope>
+        """.trimIndent()
+        val requestBody = xml.toRequestBody()
+        try {
+            val respuestaInfo = alumnoCardex.getCardex(requestBody).string().split("{","}")
+            //Log.d("asdasd", respuestaInfo.toString())
+
+            if(respuestaInfo.size > 1){
+                val arreglo = mutableListOf<Cardex>()
+                var prom: String = "Null"
+                for(cardex in respuestaInfo){
+                    if(cardex.contains("Materia")){
+                        val objCardex = Gson().fromJson("{$cardex}", Cardex::class.java)
+                        //Log.d("asdasd", objCardex.toString())
+                        arreglo.add(objCardex)
+                    } else if(cardex.contains("PromedioGral")){
+                        prom = Gson().fromJson("{$cardex}", CardexProm::class.java).toString()
+                        //Log.d("Promediomamalon", prom)
+                    }
+                }
+                Log.d("asdasd", prom+"/"+arreglo.toString())
+                return prom+"/"+arreglo
             } else
                 return ""
             return ""

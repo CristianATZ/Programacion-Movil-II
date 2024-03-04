@@ -5,14 +5,12 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.HistoryEdu
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.School
-import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,7 +38,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,27 +46,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.navigation.AppScreens
-import com.example.accesologin.viewmodel.viewModelAcademicSchedule
-import com.example.accesologin.viewmodel.viewModelLogin
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.example.accesologin.viewmodel.AlumnoViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -78,7 +65,7 @@ import java.io.IOException
 fun HomeScreen(
     navController: NavController,
     text: String?,
-    viewModelAcademic: viewModelAcademicSchedule = viewModel(factory = viewModelAcademicSchedule.Factory)
+    viewModelAcademic: AlumnoViewModel = viewModel(factory = AlumnoViewModel.Factory)
 ){
     val estudiante = text?.split("(", ")")?.get(1)?.split(",")
 
@@ -128,7 +115,11 @@ fun HomeScreen(
                         label = { Text("Cardex") },
                         icon = { Icon(Icons.Outlined.HistoryEdu, null) },
                         selected = false,
-                        onClick = { navController.navigate(AppScreens.CardexScreen.route) }
+                        onClick = {
+                            scope.launch {
+                                obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                            }
+                        }
                     )
                     NavigationDrawerItem(
                         label = { Text("Calificaciones por unidad") },
@@ -304,7 +295,7 @@ fun AtributoAlumno(header: String, body: String) {
     }
 }
 
-suspend fun obtenerCargaAcademica(viewModel: viewModelAcademicSchedule, navController: NavController){
+suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: NavController){
     val TAG = "HOME SCREEN"
     Log.d(TAG, "Invocando obtenerCargaAcademica")
     var schedule = viewModel.getAcademicSchedule()
@@ -312,7 +303,7 @@ suspend fun obtenerCargaAcademica(viewModel: viewModelAcademicSchedule, navContr
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
 }
 
-suspend fun obtenerCalificaciones(viewModel: viewModelAcademicSchedule, navController: NavController){
+suspend fun obtenerCalificaciones(viewModel: AlumnoViewModel, navController: NavController){
     val TAG = "HOME SCREEN"
     Log.d(TAG, "Invocando obtenerCalififcaciones")
     var unidades = viewModel.getCalifByUnidad()
@@ -320,8 +311,14 @@ suspend fun obtenerCalificaciones(viewModel: viewModelAcademicSchedule, navContr
     navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
 }
 
-suspend fun obtenerCalifFinales(viewModel: viewModelAcademicSchedule, navController: NavController){
+suspend fun obtenerCalifFinales(viewModel: AlumnoViewModel, navController: NavController){
     var unidades = viewModel.getCalifFinal()
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.FinalsCalifScreen.route + encodedInfo)
+}
+
+suspend fun obtenerKardexConPromedioByAlumno(viewModel: AlumnoViewModel, navController: NavController){
+    var cardex = viewModel.getCardexByAlumno()
+    var encodedInfo = Uri.encode(cardex)
+    navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
 }

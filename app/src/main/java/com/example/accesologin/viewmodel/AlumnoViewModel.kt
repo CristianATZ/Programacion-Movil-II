@@ -1,6 +1,5 @@
 package com.example.accesologin.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -12,7 +11,7 @@ import com.example.accesologin.AlumnosContainer
 import kotlinx.coroutines.async
 
 
-class viewModelAcademicSchedule(private val alumnosRepository: AlumnosRepository): ViewModel() {
+class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewModel() {
     suspend fun getAcademicSchedule(): String {
         //val TAG = "VIEWMODEL"
         //Log.d(TAG, "ENTRANDO AL VIEWMODEL")
@@ -38,12 +37,21 @@ class viewModelAcademicSchedule(private val alumnosRepository: AlumnosRepository
         return grades.await()
     }
 
+    suspend fun getCardexByAlumno(): String {
+        //val TAG = "VIEWMODEL"
+        //Log.d(TAG, "ENTRANDO AL VIEWMODEL")
+        val cardex = viewModelScope.async{
+            alumnosRepository.obtenerCardex()
+        }
+        return cardex.await()
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as AlumnosContainer)
                 val alumnosAplication = application.container.alumnosRepository
-                viewModelAcademicSchedule(alumnosRepository = alumnosAplication)
+                AlumnoViewModel(alumnosRepository = alumnosAplication)
             }
         }
     }
