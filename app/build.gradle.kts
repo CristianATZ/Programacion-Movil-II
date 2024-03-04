@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp") version "1.8.21-1.0.11"
 }
 
 android {
@@ -83,4 +84,10 @@ dependencies {
 
     // Kotlin Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    //Room
+    implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
+    implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
 }
