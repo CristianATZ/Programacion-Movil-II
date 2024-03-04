@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.HistoryEdu
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Button
@@ -56,6 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.AlumnoViewModel
+import com.example.accesologin.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -101,6 +103,19 @@ fun HomeScreen(
                             .padding(top = 10.dp)
                     )
                     val scope = rememberCoroutineScope()
+                    NavigationDrawerItem(
+                        label = { Text("Info Básica") },
+                        icon = { Icon(Icons.Outlined.Info, null) },
+                        selected = false,
+                        onClick = {
+                            scope.launch {
+                                drawerState.apply {
+                                    if(isClosed) open()
+                                    else close()
+                                }
+                            }
+                        }
+                    )
                     NavigationDrawerItem(
                         label = { Text("Carga Académica") },
                         icon = { Icon(Icons.Outlined.Schedule, null) },
