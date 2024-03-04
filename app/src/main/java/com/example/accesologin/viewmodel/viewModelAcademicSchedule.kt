@@ -11,10 +11,11 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import com.example.accesologin.AlumnosContainer
 import kotlinx.coroutines.async
 
+
 class viewModelAcademicSchedule(private val alumnosRepository: AlumnosRepository): ViewModel() {
     suspend fun getAcademicSchedule(): String {
-        val TAG = "VIEWMODEL"
-        Log.d(TAG, "ENTRANDO AL VIEWMODEL")
+        //val TAG = "VIEWMODEL"
+        //Log.d(TAG, "ENTRANDO AL VIEWMODEL")
         val schedule = viewModelScope.async{
             alumnosRepository.obtenerCarga()
         }
@@ -22,12 +23,19 @@ class viewModelAcademicSchedule(private val alumnosRepository: AlumnosRepository
     }
 
     suspend fun getCalifByUnidad() : String {
-        val TAG = "VIEWMODEL"
-        Log.d(TAG, "ENTRANDO AL VIEWMODEL")
+        //val TAG = "VIEWMODEL"
+        //Log.d(TAG, "ENTRANDO AL VIEWMODEL")
         val schedule = viewModelScope.async{
             alumnosRepository.obtenerCalificaciones()
         }
         return schedule.await()
+    }
+
+    suspend fun getCalifFinal(): String {
+        val grades = viewModelScope.async {
+            alumnosRepository.obtenerCalifFinales()
+        }
+        return grades.await()
     }
 
     companion object {

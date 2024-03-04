@@ -1,6 +1,7 @@
 package com.example.accesologin.data
 
 import com.example.accesologin.network.repository.AcademicScheduleService
+import com.example.accesologin.network.repository.CalifFinalesService
 import com.example.accesologin.network.repository.CalificacionesService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -44,12 +45,17 @@ class DefaultAppContainer: AppContainer {
         retrofit.create(CalificacionesService::class.java)
     }
 
+    private val retrofitCalifFinals: CalifFinalesService by lazy {
+        retrofit.create(CalifFinalesService::class.java)
+    }
+
     override val alumnosRepository: AlumnosRepository by lazy {
         NetworkAlumnosRepository(
             retrofitService,
             retrofitServiceInfo,
             retrofitAcademicScheduleService,
-            retrofitCalificacionesByUnidad
+            retrofitCalificacionesByUnidad,
+            retrofitCalifFinals
         )
     }
 }

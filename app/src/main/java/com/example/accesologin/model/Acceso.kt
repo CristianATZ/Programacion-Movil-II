@@ -85,3 +85,12 @@ data class CalificacionByUnidad(
         }
     }
 }
+
+
+data class CalifFinal(
+    var calif: String,
+    var acred: String,
+    var grupo: String,
+    var materia: String,
+    var Observaciones: String
+)

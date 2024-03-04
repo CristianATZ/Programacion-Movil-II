@@ -145,7 +145,11 @@ fun HomeScreen(
                         label = { Text("Calificaciones finales") },
                         icon = { Icon(Icons.Outlined.School, null) },
                         selected = false,
-                        onClick = { navController.navigate(AppScreens.FinalsCalifScreen.route) }
+                        onClick = {
+                            scope.launch {
+                                obtenerCalifFinales(viewModelAcademic, navController)
+                            }
+                        }
                     )
                 }
             }
@@ -314,4 +318,10 @@ suspend fun obtenerCalificaciones(viewModel: viewModelAcademicSchedule, navContr
     var unidades = viewModel.getCalifByUnidad()
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
+}
+
+suspend fun obtenerCalifFinales(viewModel: viewModelAcademicSchedule, navController: NavController){
+    var unidades = viewModel.getCalifFinal()
+    var encodedInfo = Uri.encode(unidades)
+    navController.navigate(AppScreens.FinalsCalifScreen.route + encodedInfo)
 }

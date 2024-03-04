@@ -3,9 +3,11 @@ package com.example.accesologin.data
 import android.util.Log
 import com.example.accesologin.model.Acceso
 import com.example.accesologin.model.Alumno
+import com.example.accesologin.model.CalifFinal
 import com.example.accesologin.model.CalificacionByUnidad
 import com.example.accesologin.model.Carga
 import com.example.accesologin.network.repository.AcademicScheduleService
+import com.example.accesologin.network.repository.CalifFinalesService
 import com.example.accesologin.network.repository.CalificacionesService
 import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.SiceApiService
@@ -18,13 +20,15 @@ interface AlumnosRepository {
     suspend fun obtenerInfo(): String
     suspend fun obtenerCarga(): String
     suspend fun obtenerCalificaciones() : String
+    suspend fun obtenerCalifFinales(): String
 }
 
 class NetworkAlumnosRepository(
     private val alumnoApiService: SiceApiService,
     private val infoService: InfoService,
     private val academicScheduleService: AcademicScheduleService,
-    private val calificacionesService: CalificacionesService
+    private val calificacionesService: CalificacionesService,
+    private val califFinales: CalifFinalesService
 ): AlumnosRepository {
     override suspend fun obtenerAcceso(matricula: String, password: String): Boolean {
         val xml = """
@@ -129,6 +133,40 @@ class NetworkAlumnosRepository(
                     if(calificaciones.contains("Materia")){
                         val objCalif = Gson().fromJson("{"+calificaciones+"}", CalificacionByUnidad::class.java)
                         Log.d("asdasd", objCalif.toString())
+                        arreglo.add(objCalif)
+                    }
+                }
+                //Log.d("asdasd", arreglo.toString())
+                return ""+arreglo
+            } else
+                return ""
+            return ""
+        } catch (e: IOException){
+            return ""
+        }
+    }
+
+    override suspend fun obtenerCalifFinales(): String {
+        val xml = """
+            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+              <soap:Body>
+                <getAllCalifFinalByAlumnos xmlns="http://tempuri.org/">
+                  <bytModEducativo>2</bytModEducativo>
+                </getAllCalifFinalByAlumnos>
+              </soap:Body>
+            </soap:Envelope>
+        """.trimIndent()
+        val requestBody = xml.toRequestBody()
+        try {
+            // val respuestaInfo = calificacionesService.getCalifUnidadesByAlumno(requestBody).string().split("{","}")
+            val respuestaInfo = califFinales.getAllCalifFinalByAlumnos(requestBody).string().split("{","}")
+            // Log.d("asdasd", respuestaInfo.toString())
+            if(respuestaInfo.size > 1){
+                val arreglo = mutableListOf<CalifFinal>()
+                for(calificaciones in respuestaInfo){
+                    if(calificaciones.contains("calif")){
+                        val objCalif = Gson().fromJson("{"+calificaciones+"}", CalifFinal::class.java)
+                        // Log.d("asdasd", objCalif.toString())
                         arreglo.add(objCalif)
                     }
                 }

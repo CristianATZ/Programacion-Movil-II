@@ -54,8 +54,12 @@ fun AppNavigation(){
             UnitsCalifScreen(navController, it.arguments?.getString("text"))
         }
 
-        composable(AppScreens.FinalsCalifScreen.route){
-            FinalsCalifScreen(navController)
+        composable(AppScreens.FinalsCalifScreen.route+"{text}",
+            arguments = listOf(navArgument(name = "text"){
+                type = NavType.StringType
+            })
+        ){
+            FinalsCalifScreen(navController, it.arguments?.getString("text"))
         }
     }
 }
