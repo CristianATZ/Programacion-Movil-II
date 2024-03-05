@@ -2,9 +2,11 @@ package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,6 +30,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Divider
@@ -39,10 +48,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -68,6 +82,8 @@ fun AcademicScheduleScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    var dayList = listOf("Lun","Mar","Mie","Jue","Vie")
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -145,31 +161,14 @@ fun AcademicScheduleScreen(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    navigationIcon = {
-                        Button(
-                            onClick = {
-                                scope.launch {
-                                    drawerState.apply {
-                                        if(isClosed) open()
-                                        else close()
-                                    }
-                                }
-                            }
-                        ) {
-                            Icon(Icons.Default.Menu, contentDescription = null)
+                TopBarAcademic(){
+                    scope.launch {
+                        drawerState.apply {
+                            if(isClosed) open()
+                            else close()
                         }
-                    },
-                    title = {
-                        Text(
-                            text = "Carga Académica",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                        )
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                )
+                    }
+                }
             }
         ) {
             LazyColumn{
@@ -184,6 +183,33 @@ fun AcademicScheduleScreen(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarAcademic(
+    onClick: () -> Unit
+) {
+    TopAppBar(
+        navigationIcon = {
+            Button(
+                onClick = {
+                    onClick()
+                }
+            ) {
+                Icon(Icons.Default.Menu, contentDescription = null)
+            }
+        },
+        title = {
+            Text(
+                text = "Carga Académica",
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+        },
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
+    )
 }
 
 
@@ -217,7 +243,14 @@ fun parseCargaList(input: String): List<Carga> {
 }
 
 @Composable
-fun CardCarga(materia: Carga){
+fun CardCarga(
+    materia: Carga
+){
+
+    var open by remember {
+        mutableStateOf(false)
+    }
+
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 1.dp
@@ -228,21 +261,87 @@ fun CardCarga(materia: Carga){
     ) {
         Column(
             modifier = Modifier
-                .padding(6.dp)
+                .clickable {
+                    open = !open
+                }
         ) {
-            Text(
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                text = materia.Materia
-            )
-            Text(materia.Docente)
-            Text("Grupo: " + materia.Grupo)
-            if(materia.Lunes.isNotBlank()) Text("Lunes: " + materia.Lunes)
-            if(materia.Martes.isNotBlank()) Text("Martes: " + materia.Martes)
-            if(materia.Miercoles.isNotBlank()) Text("Miercoles: " + materia.Miercoles)
-            if(materia.Jueves.isNotBlank()) Text("Jueves: " + materia.Jueves)
-            if(materia.Viernes.isNotBlank()) Text("Viernes: " + materia.Viernes)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.tertiaryContainer)
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    text = materia.Materia,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Row {
+                Row(
+                    modifier = Modifier
+                        .weight(0.2f)
+                        .height(60.dp)
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = materia.Grupo,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .weight(0.8f)
+                        .height(60.dp)
+                        .background(color = MaterialTheme.colorScheme.surfaceVariant),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = materia.Docente,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            if(open){
+                Column {
+                    if (materia.Lunes.isNotBlank()) {
+                        WeekdayText("Lunes: ${materia.Lunes}")
+                    }
+                    if (materia.Martes.isNotBlank()) {
+                        WeekdayText("Martes: ${materia.Martes}")
+                    }
+                    if (materia.Miercoles.isNotBlank()) {
+                        WeekdayText("Miércoles: ${materia.Miercoles}")
+                    }
+                    if (materia.Jueves.isNotBlank()) {
+                        WeekdayText("Jueves: ${materia.Jueves}")
+                    }
+                    if (materia.Viernes.isNotBlank()) {
+                        WeekdayText("Viernes: ${materia.Viernes}")
+                    }
+                }
+            }
         }
     }
+}
+
+@Composable
+fun WeekdayText(text: String) {
+    Text(
+        text = text,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.bodyMedium.copy(
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal
+        )
+    )
 }
