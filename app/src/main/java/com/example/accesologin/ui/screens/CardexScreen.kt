@@ -1,12 +1,16 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -255,18 +259,34 @@ fun CardCardex(materia: Cardex){
             .fillMaxWidth()
             .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 5.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
-                .padding(6.dp)
+                .fillMaxWidth()
         ) {
-            Text(
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                text = materia.Materia
-            )
-            Text("Calificacion: " + materia.Calif)
-            Text("Acreditación: " + materia.Acred)
+            Column(
+                modifier = Modifier
+                    .weight(0.2f)
+                    .height(70.dp)
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    text = materia.Calif
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(0.8f)
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = materia.Materia)
+                Text("Acreditación: " + materia.Acred)
+            }
         }
     }
 }
