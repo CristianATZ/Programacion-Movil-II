@@ -3,6 +3,7 @@ package com.example.accesologin
 import android.app.Application
 import androidx.room.Room
 import com.example.accesologin.data.AccesoDao
+import com.example.accesologin.data.AlumnoDao
 import com.example.accesologin.data.AppContainer
 import com.example.accesologin.data.DefaultAppContainer
 import com.example.accesologin.data.SICEDatabase
@@ -43,5 +44,10 @@ class AlumnosContainer: Application() {
         fun getUserLoginDao(): AccesoDao {
             return instance!!.getDB().UserLoginDao()
         }
+
+        fun getUserInfoDao(): AlumnoDao {
+            return instance!!.getDB().UserInfoDao()
+        }
+
     }
 }

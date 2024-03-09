@@ -1,8 +1,13 @@
 package com.example.accesologin.data
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import com.example.accesologin.AlumnosContainer
 import com.example.accesologin.model.Acceso
+import com.example.accesologin.model.Acceso_Entity
 import com.example.accesologin.model.Alumno
+import com.example.accesologin.model.Alumno_Entity
 import com.example.accesologin.model.CalifFinal
 import com.example.accesologin.model.CalificacionByUnidad
 import com.example.accesologin.model.Cardex
@@ -15,8 +20,12 @@ import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.KardexService
 import com.example.accesologin.network.repository.SiceApiService
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.time.LocalDateTime
 
 interface AlumnosRepository {
     suspend fun obtenerAcceso(matricula: String, password: String): Boolean
@@ -35,6 +44,7 @@ class NetworkAlumnosRepository(
     private val califFinales: CalifFinalesService,
     private val alumnoCardex: KardexService
 ): AlumnosRepository {
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun obtenerAcceso(matricula: String, password: String): Boolean {
         val xml = """
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -54,18 +64,34 @@ class NetworkAlumnosRepository(
             var respuesta=alumnoApiService.getAccess(requestBody).string().split("{","}")
             if(respuesta.size>1){
                 val result = Gson().fromJson("{"+respuesta[1]+"}", Acceso::class.java)
-                Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
-                return result.acceso.equals("true")
+                //Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
+                if(result.acceso.equals("true")){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        AlumnosContainer.getUserLoginDao().insertAcceso(
+                            Acceso_Entity(
+                                id = 0,
+                                acceso = result.acceso,
+                                estatus = result.estatus,
+                                password = password,
+                                matricula = matricula,
+                                fecha = LocalDateTime.now().toString()
+                            )
+                        )
+                    }
+                    return true
+                }
+                else return false
             } else {
-                Log.d(TAG, "ENTRO AL ELSE Y ES: false")
+                //Log.d(TAG, "ENTRO AL ELSE Y ES: false")
                 return false
             }
         }catch (e:IOException){
-            Log.d(TAG, "ENTRO AL EXCEPTION Y ES: false")
+            //Log.d(TAG, "ENTRO AL EXCEPTION Y ES: false")
             return false
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun obtenerInfo() : String{
         val xml = """
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -81,6 +107,29 @@ class NetworkAlumnosRepository(
             if(respuestaInfo.size>1){
                 //Log.d("REPOSITORY", respuestaInfo[1])
                 val result = Gson().fromJson("{"+respuestaInfo[1]+"}", Alumno::class.java)
+                CoroutineScope(Dispatchers.IO).launch {
+                    AlumnosContainer.getUserInfoDao().insertAlumno(
+                        Alumno_Entity(
+                            id = 0,
+                            nombre = result.nombre,
+                            fechaReins = result.fechaReins,
+                            semActual = result.semActual,
+                            cdtosActuales = result.cdtosActuales,
+                            cdtosAcumulados = result.cdtosAcumulados,
+                            carrera = result.carrera,
+                            matricula = result.matricula,
+                            especialidad = result.especialidad,
+                            modEducativo = result.modEducativo,
+                            adeudo = result.adeudo,
+                            urlFoto = result.urlFoto,
+                            adeudoDescription = result.adeudoDescripcion,
+                            inscrito = result.inscrito,
+                            estatus = result.estatus,
+                            lineamiento = result.lineamiento,
+                            fecha = LocalDateTime.now().toString()
+                        )
+                    )
+                }
                 return "" + result
             } else
                 return ""

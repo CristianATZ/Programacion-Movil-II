@@ -13,8 +13,6 @@ import kotlinx.coroutines.async
 
 class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewModel() {
     suspend fun getAcademicSchedule(): String {
-        //val TAG = "VIEWMODEL"
-        //Log.d(TAG, "ENTRANDO AL VIEWMODEL")
         val schedule = viewModelScope.async{
             alumnosRepository.obtenerCarga()
         }
@@ -22,8 +20,6 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
     }
 
     suspend fun getCalifByUnidad() : String {
-        //val TAG = "VIEWMODEL"
-        //Log.d(TAG, "ENTRANDO AL VIEWMODEL")
         val schedule = viewModelScope.async{
             alumnosRepository.obtenerCalificaciones()
         }
@@ -38,8 +34,6 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
     }
 
     suspend fun getCardexByAlumno(): String {
-        //val TAG = "VIEWMODEL"
-        //Log.d(TAG, "ENTRANDO AL VIEWMODEL")
         val cardex = viewModelScope.async{
             alumnosRepository.obtenerCardex()
         }
@@ -55,4 +49,5 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
             }
         }
     }
+
 }
