@@ -5,6 +5,11 @@ import androidx.room.Room
 import com.example.accesologin.data.AccesoDao
 import com.example.accesologin.data.AlumnoDao
 import com.example.accesologin.data.AppContainer
+import com.example.accesologin.data.CalifFinalDao
+import com.example.accesologin.data.CalifUnidadDao
+import com.example.accesologin.data.CardexDao
+import com.example.accesologin.data.CardexPromDao
+import com.example.accesologin.data.CargaDao
 import com.example.accesologin.data.DefaultAppContainer
 import com.example.accesologin.data.SICEDatabase
 
@@ -49,5 +54,24 @@ class AlumnosContainer: Application() {
             return instance!!.getDB().UserInfoDao()
         }
 
+        fun getUserCargaDao(): CargaDao {
+            return instance!!.getDB().UserCargaDao()
+        }
+
+        fun getUserCalifUnidadDao(): CalifUnidadDao {
+            return instance!!.getDB().UserCalifUnidadDao()
+        }
+
+        fun getUserCalifFinalDao(): CalifFinalDao {
+            return instance!!.getDB().UserCalifFinalDao()
+        }
+
+        fun getUserCardexDao(): CardexDao {
+            return instance!!.getDB().UserCardexDao()
+        }
+
+        fun getUserCardexPromDao(): CardexPromDao {
+            return instance!!.getDB().UserCardexPromDao()
+        }
     }
 }

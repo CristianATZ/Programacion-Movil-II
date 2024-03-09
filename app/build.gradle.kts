@@ -53,17 +53,19 @@ android {
 }
 
 dependencies {
-
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
     // Retrofit with Scalar Converter
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
     implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-simplexml:2.1.0")
+
     // NavController
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
     // Icons
     implementation("androidx.compose.material:material-icons-extended:1.6.2")
 
@@ -92,4 +94,8 @@ dependencies {
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
 }
