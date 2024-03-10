@@ -15,12 +15,18 @@ import com.example.accesologin.model.Carga_Entity
 interface AccesoDao {
     @Insert
     fun insertAcceso(item: Acceso_Entity)
+
+    @Query("SELECT * FROM acceso WHERE matricula=:_matricula AND contrasenia=:_contrasenia")
+    fun getAccess(_matricula: String, _contrasenia: String): Acceso_Entity?
 }
 
 @Dao
 interface AlumnoDao {
     @Insert
     fun insertAlumno(item: Alumno_Entity)
+
+    @Query("SELECT * FROM alumno")
+    fun getAlumno(): Alumno_Entity
 }
 
 @Dao

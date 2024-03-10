@@ -79,7 +79,7 @@ fun HomeScreen(
         LaunchedEffect(openCloseSesion){
             delay(3000)
             openCloseSesion = false
-            navController.popBackStack(navController.graph.startDestinationId, inclusive = true)
+            navController.navigate(AppScreens.LoginScreen.route)
         }
         DialogCloseSesion()
     }
