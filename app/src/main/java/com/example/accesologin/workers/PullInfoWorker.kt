@@ -5,32 +5,25 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.accesologin.AlumnosContainer
-import com.example.accesologin.data.AlumnosRepository
-import com.example.accesologin.data.NetworkAlumnosRepository
-import com.example.accesologin.ui.screens.parseCargaList
 import com.example.accesologin.ui.screens.parseInfoAlumno
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 
-class PullWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
+class PullInfoWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
 
     var alumnosRepository = (ctx.applicationContext as AlumnosContainer).container.alumnosRepository
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun doWork(): Result {
-        makeStatusNotification("Trayendo datos de SICE", applicationContext)
+        makeStatusNotification("Trayendo INFO de SICE", applicationContext)
         sleep()
 
         return try {
             val alumno = parseInfoAlumno(alumnosRepository.obtenerInfo())
-            Log.d("HOLA DESDE EL WORKER", alumno.toString())
+            //Log.d("HOLA DESDE EL WORKER", alumno.toString())
             var outputData = workDataOf(
                 "nombre" to alumno.nombre,
                 "fechaReins" to alumno.fechaReins,
@@ -49,7 +42,7 @@ class PullWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, p
                 "lineamiento" to alumno.lineamiento,
                 "fecha" to LocalDateTime.now().toString()
             )
-            Log.d("SALUDAZOS HASTA CULIACAN", outputData.toString())
+            //Log.d("SALUDAZOS HASTA CULIACAN", outputData.toString())
             Result.success(outputData)
         } catch(exception: Exception){
             Result.failure()

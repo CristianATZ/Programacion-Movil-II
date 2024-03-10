@@ -50,8 +50,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.accesologin.AlumnosContainer
+import com.example.accesologin.model.Acceso_Entity
+import com.example.accesologin.model.Alumno_Entity
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.LoginViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

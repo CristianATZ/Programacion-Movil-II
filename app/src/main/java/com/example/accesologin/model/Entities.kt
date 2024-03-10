@@ -11,7 +11,7 @@ data class Acceso_Entity @RequiresApi(Build.VERSION_CODES.O) constructor(
     @PrimaryKey(true) val id: Int = 0,
     @ColumnInfo(name = "acceso") val acceso: String = "",
     @ColumnInfo(name = "estatus") val estatus: String = "",
-    @ColumnInfo(name = "contrasenia") val password: String = "",
+    @ColumnInfo(name = "contrasenia") val contrasenia: String = "",
     @ColumnInfo(name = "matricula") val matricula: String = "",
     @ColumnInfo(name = "fecha") val fecha: String = ""
 )

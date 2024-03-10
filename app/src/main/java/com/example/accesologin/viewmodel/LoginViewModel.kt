@@ -1,6 +1,5 @@
 package com.example.accesologin.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,9 +16,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
-import com.example.accesologin.data.OfflineRepository
-import com.example.accesologin.workers.PullWorker
-import com.example.accesologin.workers.StorageWorker
+import com.example.accesologin.workers.PullInfoWorker
+import com.example.accesologin.workers.SaveInfoWorker
 
 class LoginViewModel(
     private val alumnosRepository: AlumnosRepository
@@ -43,10 +41,10 @@ class LoginViewModel(
             .beginUniqueWork(
                 "TRAER_DATOS_SICE",
                 ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullWorker::class.java)
+                OneTimeWorkRequest.from(PullInfoWorker::class.java)
             )
 
-        val guardado = OneTimeWorkRequestBuilder<StorageWorker>()
+        val guardado = OneTimeWorkRequestBuilder<SaveInfoWorker>()
             .addTag("GUARDAR_DATOS_EN_ROOM")
             .build()
 

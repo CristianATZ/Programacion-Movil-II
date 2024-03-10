@@ -1,6 +1,5 @@
 package com.example.accesologin.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,8 +12,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
-import com.example.accesologin.workers.PullWorker
-import com.example.accesologin.workers.StorageWorker
+import com.example.accesologin.workers.PullCargaWorker
+import com.example.accesologin.workers.SaveCargaWorker
 import kotlinx.coroutines.async
 
 
@@ -47,6 +46,24 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
             alumnosRepository.obtenerCardex()
         }
         return cardex.await()
+    }
+
+
+    // WORKERS
+    internal fun cargaWorker(){
+        var cadena = workManager
+            .beginUniqueWork(
+                "TRAER_DATOS_SICE",
+                ExistingWorkPolicy.REPLACE,
+                OneTimeWorkRequest.from(PullCargaWorker::class.java)
+            )
+
+        val guardado = OneTimeWorkRequestBuilder<SaveCargaWorker>()
+            .addTag("GUARDAR_DATOS_EN_ROOM")
+            .build()
+
+        cadena = cadena.then(guardado)
+        cadena.enqueue()
     }
 
     companion object {

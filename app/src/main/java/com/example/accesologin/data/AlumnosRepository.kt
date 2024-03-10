@@ -65,6 +65,18 @@ class NetworkAlumnosRepository(
                 val result = Gson().fromJson("{"+respuesta[1]+"}", Acceso::class.java)
                 //Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
                 if(result.acceso.equals("true")){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        AlumnosContainer.getUserLoginDao().insertAcceso(
+                            Acceso_Entity(
+                                id = 0,
+                                acceso = result.acceso,
+                                estatus = result.estatus,
+                                contrasenia = password,
+                                matricula = matricula,
+                                fecha = LocalDateTime.now().toString()
+                            )
+                        )
+                    }
                     return true
                 }
                 else return false

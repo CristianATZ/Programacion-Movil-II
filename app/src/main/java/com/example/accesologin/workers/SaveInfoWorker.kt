@@ -10,13 +10,12 @@ import com.example.accesologin.model.Alumno_Entity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
 
-class StorageWorker(context: Context, workerParams: WorkerParameters): Worker(context, workerParams) {
+class SaveInfoWorker(context: Context, workerParams: WorkerParameters): Worker(context, workerParams) {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun doWork(): Result {
-        makeStatusNotification("Almacenando datos", applicationContext)
+        makeStatusNotification("Almacenando INFO", applicationContext)
 
         return try {
             CoroutineScope(Dispatchers.IO).launch {

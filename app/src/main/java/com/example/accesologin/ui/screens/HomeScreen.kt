@@ -57,6 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.data.AppContainer
 import com.example.accesologin.data.CookiesInterceptor
+import com.example.accesologin.model.Acceso
 import com.example.accesologin.model.Alumno
 import com.example.accesologin.model.Carga
 import com.example.accesologin.navigation.AppScreens
@@ -342,11 +343,28 @@ fun parseInfoAlumno(input: String): Alumno {
     )
 }
 
+
+fun parseLoginAlumno(input: String): Acceso {
+    val partes = input
+        .substringAfter("(")
+        .substringBefore(")")
+        .split(", ")
+        .map { it.split("=") }
+        .associate { it[0] to it[1] }
+
+    return Acceso(
+        acceso = partes["acceso"]!!,
+        estatus = partes["estatus"]!!,
+        contrasenia = partes["contrasenia"]!!,
+        matricula = partes["matricula"]!!
+    )
+}
+
 suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: NavController){
     val TAG = "HOME SCREEN"
     Log.d(TAG, "Invocando obtenerCargaAcademica")
     // INVOCACION DEL WORKER
-    // viewModel.guardadoWorker()
+    viewModel.cargaWorker()
     var schedule = viewModel.getAcademicSchedule()
     var encodedInfo = Uri.encode(schedule)
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
