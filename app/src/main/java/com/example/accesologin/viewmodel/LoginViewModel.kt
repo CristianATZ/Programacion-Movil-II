@@ -13,25 +13,28 @@ import com.example.accesologin.data.AlumnosRepository
 import kotlinx.coroutines.async
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import com.example.accesologin.AlumnosContainer
+import com.example.accesologin.data.OfflineRepository
 
-class LoginViewModel(private val alumnosRepository: AlumnosRepository): ViewModel() {
+class LoginViewModel(
+    private val alumnosRepository: AlumnosRepository
+): ViewModel() {
     var matricula by mutableStateOf("")
     var password by mutableStateOf("")
 
     // Actualizar matricula
-    fun updateMatricula(value: String){
+    fun updateMatricula(value: String) {
         matricula = value
     }
 
     // Actulziar password
-    fun updatePassword(value: String){
+    fun updatePassword(value: String) {
         password = value
     }
 
     // obtener acceso a sice
     suspend fun getAccess(matricula: String, password: String): Boolean {
-        val TAG = "VIEWMODEL"
-        Log.d(TAG, matricula+", "+password+" = "+alumnosRepository.obtenerAcceso(matricula, password).toString())
+        //val TAG = "VIEWMODEL"
+        //Log.d(TAG, matricula+", "+password+" = "+alumnosRepository.obtenerAcceso(matricula, password).toString())
         return alumnosRepository.obtenerAcceso(matricula, password)
     }
 
@@ -42,6 +45,7 @@ class LoginViewModel(private val alumnosRepository: AlumnosRepository): ViewMode
         }
         return info.await()
     }
+
     
 
     companion object {

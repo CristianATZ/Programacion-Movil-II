@@ -16,8 +16,8 @@ interface AccesoDao {
     @Insert
     fun insertAcceso(item: Acceso_Entity)
 
-    @Query("SELECT * FROM acceso WHERE matricula=:_matricula AND contrasenia=:_contrasenia")
-    fun getAccess(_matricula: String, _contrasenia: String): Acceso_Entity?
+    @Query("SELECT * FROM acceso WHERE matricula=:mat AND contrasenia=:cont")
+    fun getAccess(mat: String, cont: String): Acceso_Entity?
 }
 
 @Dao
@@ -33,6 +33,7 @@ interface AlumnoDao {
 interface CargaDao {
     @Insert
     fun insertCarga(item: Carga_Entity)
+
 }
 
 @Dao

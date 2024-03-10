@@ -11,7 +11,6 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.KardexService
 import com.example.accesologin.network.repository.SiceApiService
-import retrofit2.create
 
 interface AppContainer {
     val alumnosRepository: AlumnosRepository

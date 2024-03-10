@@ -55,6 +55,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.accesologin.data.AppContainer
+import com.example.accesologin.data.CookiesInterceptor
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
@@ -70,6 +72,8 @@ fun HomeScreen(
     viewModelAcademic: AlumnoViewModel = viewModel(factory = AlumnoViewModel.Factory)
 ){
     val estudiante = text?.split("(", ")")?.get(1)?.split(",")
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
     var openCloseSesion by remember {
         mutableStateOf(false)
@@ -84,8 +88,7 @@ fun HomeScreen(
         DialogCloseSesion()
     }
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -313,6 +316,7 @@ fun AtributoAlumno(header: String, body: String) {
 suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: NavController){
     val TAG = "HOME SCREEN"
     Log.d(TAG, "Invocando obtenerCargaAcademica")
+    viewModel.guardadoWorker()
     var schedule = viewModel.getAcademicSchedule()
     var encodedInfo = Uri.encode(schedule)
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)

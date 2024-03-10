@@ -309,8 +309,8 @@ private fun conexionInternet(context: Context): Boolean {
 }
 
 suspend fun obtenerAcceso(viewModel: LoginViewModel): Boolean {
-    val TAG = "LOGIN SCREEN"
-    Log.d(TAG, viewModel.getAccess(viewModel.matricula, viewModel.password).toString())
+    //val TAG = "LOGIN SCREEN"
+    //Log.d(TAG, viewModel.getAccess(viewModel.matricula, viewModel.password).toString())
     return viewModel.getAccess(viewModel.matricula, viewModel.password)
 }
 
