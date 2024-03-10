@@ -317,5 +317,7 @@ suspend fun obtenerAcceso(viewModel: LoginViewModel): Boolean {
 suspend fun obtenerInfo(viewModel: LoginViewModel, navController: NavController){
     var info = viewModel.getInfo()
     var encodedInfo = Uri.encode(info)
+    // INVOCACION DEL WORKER
+    viewModel.guardadoWorker()
     navController.navigate(AppScreens.HomeScreen.route + encodedInfo)
 }

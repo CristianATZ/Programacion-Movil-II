@@ -57,6 +57,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.data.AppContainer
 import com.example.accesologin.data.CookiesInterceptor
+import com.example.accesologin.model.Alumno
+import com.example.accesologin.model.Carga
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
@@ -313,10 +315,38 @@ fun AtributoAlumno(header: String, body: String) {
     }
 }
 
+fun parseInfoAlumno(input: String): Alumno {
+    val partes = input
+        .substringAfter("(")
+        .substringBefore(")")
+        .split(", ")
+        .map { it.split("=") }
+        .associate { it[0] to it[1] }
+
+    return Alumno(
+        nombre = partes["nombre"]!!,
+        fechaReins = partes["fechaReins"]!!,
+        semActual = partes["semActual"]!!,
+        cdtosAcumulados = partes["cdtosAcumulados"]!!,
+        cdtosActuales = partes["cdtosActuales"]!!,
+        carrera = partes["carrera"]!!,
+        matricula = partes["matricula"]!!,
+        especialidad = partes["especialidad"]!!,
+        modEducativo = partes["modEducativo"]!!,
+        adeudo = partes["adeudo"]!!,
+        urlFoto = partes["urlFoto"]!!,
+        adeudoDescripcion = partes["adeudoDescripcion"]!!,
+        inscrito = partes["inscrito"]!!,
+        estatus = partes["estatus"]!!,
+        lineamiento = partes["lineamiento"]!!
+    )
+}
+
 suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: NavController){
     val TAG = "HOME SCREEN"
     Log.d(TAG, "Invocando obtenerCargaAcademica")
-    viewModel.guardadoWorker()
+    // INVOCACION DEL WORKER
+    // viewModel.guardadoWorker()
     var schedule = viewModel.getAcademicSchedule()
     var encodedInfo = Uri.encode(schedule)
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)

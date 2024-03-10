@@ -21,22 +21,6 @@ import kotlinx.coroutines.async
 class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewModel() {
     private val workManager = WorkManager.getInstance()
 
-    internal fun guardadoWorker(){
-        var cadena = workManager
-            .beginUniqueWork(
-                "TRAER_DATOS_SICE",
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullWorker::class.java)
-            )
-
-        val guardado = OneTimeWorkRequestBuilder<StorageWorker>()
-            .addTag("GUARDAR_DATOS_EN_ROOM")
-            .build()
-
-        cadena = cadena.then(guardado)
-        cadena.enqueue()
-    }
-
     suspend fun getAcademicSchedule(): String {
         val schedule = viewModelScope.async{
             alumnosRepository.obtenerCarga()

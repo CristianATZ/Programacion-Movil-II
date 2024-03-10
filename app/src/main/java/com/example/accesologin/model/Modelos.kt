@@ -11,8 +11,8 @@ data class Alumno (
     var nombre:String="",
     var fechaReins:String="",
     var semActual:String="",
-    var cdtosAcumulados:Int=0,
-    var cdtosActuales:Int=0,
+    var cdtosAcumulados:String="",
+    var cdtosActuales:String="",
     var carrera:String="",
     var matricula:String="",
     var especialidad:String="",
@@ -20,9 +20,9 @@ data class Alumno (
     var adeudo:String="",
     var urlFoto:String="",
     var adeudoDescripcion:String="",
-    var inscrito:Boolean=false,
+    var inscrito:String="",
     var estatus:String="",
-    var lineamiento:Int=0,
+    var lineamiento:String="",
 )
 
 data class Carga(

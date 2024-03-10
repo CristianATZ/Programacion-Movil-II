@@ -12,8 +12,14 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.accesologin.data.AlumnosRepository
 import kotlinx.coroutines.async
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
 import com.example.accesologin.data.OfflineRepository
+import com.example.accesologin.workers.PullWorker
+import com.example.accesologin.workers.StorageWorker
 
 class LoginViewModel(
     private val alumnosRepository: AlumnosRepository
@@ -29,6 +35,23 @@ class LoginViewModel(
     // Actulziar password
     fun updatePassword(value: String) {
         password = value
+    }
+
+    private val workManager = WorkManager.getInstance()
+    internal fun guardadoWorker(){
+        var cadena = workManager
+            .beginUniqueWork(
+                "TRAER_DATOS_SICE",
+                ExistingWorkPolicy.REPLACE,
+                OneTimeWorkRequest.from(PullWorker::class.java)
+            )
+
+        val guardado = OneTimeWorkRequestBuilder<StorageWorker>()
+            .addTag("GUARDAR_DATOS_EN_ROOM")
+            .build()
+
+        cadena = cadena.then(guardado)
+        cadena.enqueue()
     }
 
     // obtener acceso a sice

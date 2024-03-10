@@ -2,37 +2,55 @@ package com.example.accesologin.workers
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.example.accesologin.AlumnosContainer
-import com.example.accesologin.model.Acceso_Entity
+import com.example.accesologin.data.AlumnosRepository
+import com.example.accesologin.data.NetworkAlumnosRepository
+import com.example.accesologin.ui.screens.parseCargaList
+import com.example.accesologin.ui.screens.parseInfoAlumno
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-class PullWorker(ctx: Context, params: WorkerParameters): Worker(ctx, params) {
+
+class PullWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
+
+    var alumnosRepository = (ctx.applicationContext as AlumnosContainer).container.alumnosRepository
+
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         makeStatusNotification("Trayendo datos de SICE", applicationContext)
+        sleep()
 
         return try {
-            /*
-            CoroutineScope(Dispatchers.IO).launch {
-                AlumnosContainer.getUserLoginDao().insertAcceso(
-                    Acceso_Entity(
-                        id = 0,
-                        acceso = result.acceso,
-                        estatus = result.estatus,
-                        password = password,
-                        matricula = matricula,
-                        fecha = LocalDateTime.now().toString()
-                    )
-                )
-            }
-             */
-            Result.success()
+            val alumno = parseInfoAlumno(alumnosRepository.obtenerInfo())
+            Log.d("HOLA DESDE EL WORKER", alumno.toString())
+            var outputData = workDataOf(
+                "nombre" to alumno.nombre,
+                "fechaReins" to alumno.fechaReins,
+                "semActual" to alumno.semActual,
+                "cdtosAcumulados" to alumno.cdtosAcumulados,
+                "cdtosActuales" to alumno.cdtosActuales,
+                "carrera" to alumno.carrera,
+                "matricula" to alumno.matricula,
+                "especialidad" to alumno.especialidad,
+                "modEducativo" to alumno.modEducativo,
+                "adeudo" to alumno.adeudo,
+                "urlFoto" to alumno.urlFoto,
+                "adeudoDescripcion" to alumno.adeudoDescripcion,
+                "inscrito" to alumno.inscrito,
+                "estatus" to alumno.estatus,
+                "lineamiento" to alumno.lineamiento,
+                "fecha" to LocalDateTime.now().toString()
+            )
+            Log.d("SALUDAZOS HASTA CULIACAN", outputData.toString())
+            Result.success(outputData)
         } catch(exception: Exception){
             Result.failure()
         }
