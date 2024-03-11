@@ -26,8 +26,6 @@ class AlumnosContainer: Application() {
         instance = this
     }
 
-
-
     fun getAppContainer(): AppContainer {
         return container
     }
@@ -47,6 +45,10 @@ class AlumnosContainer: Application() {
 
     companion object {
         private var instance: AlumnosContainer?=null
+
+        fun getDataBase(): SICEDatabase {
+            return instance!!.getDB()
+        }
 
         fun getUserLoginDao(): AccesoDao {
             return instance!!.getDB().UserLoginDao()

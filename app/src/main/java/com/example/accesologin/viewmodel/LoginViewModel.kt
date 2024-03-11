@@ -3,6 +3,7 @@ package com.example.accesologin.viewmodel
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.accesologin.data.AlumnosRepository
 import kotlinx.coroutines.async
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.room.Room
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
@@ -20,6 +22,7 @@ import com.example.accesologin.AlumnosContainer
 import com.example.accesologin.data.OfflineRepository
 import com.example.accesologin.workers.PullInfoWorker
 import com.example.accesologin.workers.SaveInfoWorker
+import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val alumnosRepository: AlumnosRepository,
@@ -27,6 +30,7 @@ class LoginViewModel(
 ): ViewModel() {
     var matricula by mutableStateOf("")
     var password by mutableStateOf("")
+    private val db = AlumnosContainer.getDataBase()
 
     // Actualizar matricula
     fun updateMatricula(value: String) {
@@ -70,11 +74,18 @@ class LoginViewModel(
         return info.await()
     }
 
-
     // METODOS DEL REPOSITORIO OFFLINE
     suspend fun getAccessDB(matricula: String, password: String): Boolean{
-        Log.d("LoginViewModel", offlineRepository.getAccesDB(matricula, password).toString())
-        return offlineRepository.getAccesDB(matricula, password).acceso.equals(true)
+        try {
+            viewModelScope.launch {
+                Log.d("LoginViewModel", db.UserLoginDao().getAccess(matricula, password).toString())
+            }
+            //return offlineRepository.getAccesDB(matricula, password).acceso.equals(true)
+            return true
+        } catch (exception: Exception){
+            Log.d("LoginViewModel", exception.toString())
+            return false
+        }
     }
 
     

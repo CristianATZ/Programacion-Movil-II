@@ -190,13 +190,20 @@ fun LoginScreen(
                             else {
                                 // openNoInternet = !openNoInternet
                                 scope.launch {
-                                    val acceso = viewModel.getAccessDB(viewModel.matricula, viewModel.password)
+                                    try {
+                                        val acceso = viewModel.getAccessDB(viewModel.matricula, viewModel.password)
+                                    }catch (Exception1 : Exception)
+                                    {
+                                        Log.d("ERROR",Exception1.toString())
+                                    }
+
+                                    /*
                                     if(acceso){
                                         obtenerInfoDB(navController)
                                     }
                                     else{
                                         openNoInternet = !openNoInternet
-                                    }
+                                    }*/
                                 }
                             }
                         } else {
