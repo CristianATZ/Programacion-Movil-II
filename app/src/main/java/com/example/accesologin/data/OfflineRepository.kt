@@ -9,7 +9,7 @@ import com.example.accesologin.model.Cardex_Entity
 import com.example.accesologin.model.Carga_Entity
 
 interface RepositoryDB {
-    fun getAccesDB(matricula: String, password: String):  Acceso_Entity
+    suspend fun getAccesDB(matricula: String, password: String):  Acceso_Entity
     fun getAlumnoDB(): Alumno_Entity
     fun getCargaDB(): List<Carga_Entity>
     fun getCalifUnidadDB(): List<CalifUnidad_Entity>
@@ -28,8 +28,8 @@ class OfflineRepository(
     private val cardexPromDao: CardexPromDao
 ): RepositoryDB {
     //override suspend fun getAccesDB(matricula: String, contrasenia: String): Acceso_Entity = accesoDao.getAccess(matricula, contrasenia)
-    override fun getAccesDB(matricula: String, password: String): Acceso_Entity {
-        return accesoDao.getAccess()
+    override suspend fun getAccesDB(matricula: String, password: String): Acceso_Entity {
+        return accesoDao.getAccess(matricula, password)
     }
 
     override fun getAlumnoDB(): Alumno_Entity {

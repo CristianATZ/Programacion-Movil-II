@@ -17,14 +17,16 @@ class AlumnosContainer: Application() {
     lateinit var container: AppContainer
     private var db: SICEDatabase ?= null
 
+    override fun onCreate() {
+        super.onCreate()
+        container = DefaultAppContainer(this)
+    }
+
     init {
         instance = this
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        container = DefaultAppContainer()
-    }
+
 
     fun getAppContainer(): AppContainer {
         return container

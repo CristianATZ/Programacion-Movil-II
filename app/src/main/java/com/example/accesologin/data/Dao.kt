@@ -17,8 +17,8 @@ interface AccesoDao {
     @Insert
     fun insertAcceso(item: Acceso_Entity)
 
-    @Query("SELECT * FROM acceso")
-    fun getAccess(): Acceso_Entity
+    @Query("SELECT * FROM acceso WHERE matricula=:mat AND contrasenia=:pass")
+    fun getAccess(mat: String, pass: String): Acceso_Entity
 
     @Query("DELETE FROM acceso")
     suspend fun deleteAccesos()

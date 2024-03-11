@@ -1,5 +1,6 @@
 package com.example.accesologin.data
 
+import androidx.compose.ui.platform.LocalContext
 import com.example.accesologin.network.repository.AcademicScheduleService
 import com.example.accesologin.network.repository.CalifFinalesService
 import com.example.accesologin.network.repository.CalificacionesService
@@ -11,12 +12,14 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import com.example.accesologin.network.repository.InfoService
 import com.example.accesologin.network.repository.KardexService
 import com.example.accesologin.network.repository.SiceApiService
+import android.content.Context
 
 interface AppContainer {
     val alumnosRepository: AlumnosRepository
+    val offlineRepository: OfflineRepository
 }
 
-class DefaultAppContainer: AppContainer {
+class DefaultAppContainer(private val context: Context): AppContainer {
     private val BASE_URL =
         "https://sicenet.surguanajuato.tecnm.mx/"
 
@@ -61,6 +64,18 @@ class DefaultAppContainer: AppContainer {
             retrofitCalificacionesByUnidad,
             retrofitCalifFinals,
             retrofitKardexConPromedioByAlumno
+        )
+    }
+
+    override val offlineRepository: OfflineRepository by lazy {
+        OfflineRepository(
+            SICEDatabase.getDatabase(context).UserLoginDao(),
+            SICEDatabase.getDatabase(context).UserInfoDao(),
+            SICEDatabase.getDatabase(context).UserCargaDao(),
+            SICEDatabase.getDatabase(context).UserCalifUnidadDao(),
+            SICEDatabase.getDatabase(context).UserCalifFinalDao(),
+            SICEDatabase.getDatabase(context).UserCardexDao(),
+            SICEDatabase.getDatabase(context).UserCardexPromDao()
         )
     }
 }

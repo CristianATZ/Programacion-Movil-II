@@ -1,5 +1,6 @@
 package com.example.accesologin.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,11 +17,13 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
+import com.example.accesologin.data.OfflineRepository
 import com.example.accesologin.workers.PullInfoWorker
 import com.example.accesologin.workers.SaveInfoWorker
 
 class LoginViewModel(
-    private val alumnosRepository: AlumnosRepository
+    private val alumnosRepository: AlumnosRepository,
+    private val offlineRepository: OfflineRepository
 ): ViewModel() {
     var matricula by mutableStateOf("")
     var password by mutableStateOf("")
@@ -67,6 +70,13 @@ class LoginViewModel(
         return info.await()
     }
 
+
+    // METODOS DEL REPOSITORIO OFFLINE
+    suspend fun getAccessDB(matricula: String, password: String): Boolean{
+        Log.d("LoginViewModel", offlineRepository.getAccesDB(matricula, password).toString())
+        return offlineRepository.getAccesDB(matricula, password).acceso.equals(true)
+    }
+
     
 
     companion object {
@@ -74,7 +84,11 @@ class LoginViewModel(
             initializer {
                 val application = (this[APPLICATION_KEY] as AlumnosContainer)
                 val alumnosAplication = application.container.alumnosRepository
-                LoginViewModel(alumnosRepository = alumnosAplication)
+                val alumnosAplicationDB = application.container.offlineRepository
+                LoginViewModel(
+                    alumnosRepository = alumnosAplication,
+                    offlineRepository = alumnosAplicationDB
+                )
             }
         }
     }

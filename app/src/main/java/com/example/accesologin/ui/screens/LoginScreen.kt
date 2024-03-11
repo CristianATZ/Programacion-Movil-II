@@ -188,7 +188,16 @@ fun LoginScreen(
                                 }
                             }
                             else {
-                                openNoInternet = !openNoInternet
+                                // openNoInternet = !openNoInternet
+                                scope.launch {
+                                    val acceso = viewModel.getAccessDB(viewModel.matricula, viewModel.password)
+                                    if(acceso){
+                                        obtenerInfoDB(navController)
+                                    }
+                                    else{
+                                        openNoInternet = !openNoInternet
+                                    }
+                                }
                             }
                         } else {
                             openError = !openError
@@ -325,4 +334,9 @@ suspend fun obtenerInfo(viewModel: LoginViewModel, navController: NavController)
     // INVOCACION DEL WORKER
     viewModel.guardadoWorker()
     navController.navigate(AppScreens.HomeScreen.route + encodedInfo)
+}
+
+fun obtenerInfoDB(navController: NavController){
+    // MANDAR INFO POR AQUI
+    navController.navigate(AppScreens.HomeScreen.route)
 }

@@ -1,6 +1,8 @@
 package com.example.accesologin.data
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.accesologin.model.Acceso_Entity
 import com.example.accesologin.model.Alumno_Entity
@@ -19,4 +21,20 @@ abstract class SICEDatabase: RoomDatabase() {
     abstract fun UserCalifFinalDao(): CalifFinalDao
     abstract fun UserCardexDao(): CardexDao
     abstract fun UserCardexPromDao(): CardexPromDao
+
+    companion object {
+        @Volatile
+        private var Instance: SICEDatabase ?= null
+
+        fun getDatabase(context: Context): SICEDatabase {
+            return Instance ?: synchronized(this){
+                Room.databaseBuilder(context, SICEDatabase::class.java, "sicenet_database")
+                    .allowMainThreadQueries()
+                    .build()
+                    .also {
+                        Instance = it
+                    }
+            }
+        }
+    }
 }
