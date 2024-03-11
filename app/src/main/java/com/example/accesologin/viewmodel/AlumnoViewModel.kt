@@ -14,8 +14,10 @@ import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
 import com.example.accesologin.workers.PullCardexWorker
 import com.example.accesologin.workers.PullCargaWorker
+import com.example.accesologin.workers.PullUnidadesWorker
 import com.example.accesologin.workers.SaveCardexWorker
 import com.example.accesologin.workers.SaveCargaWorker
+import com.example.accesologin.workers.SaveUnidadesWorker
 import kotlinx.coroutines.async
 
 
@@ -77,6 +79,22 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
             )
 
         val guardado = OneTimeWorkRequestBuilder<SaveCardexWorker>()
+            .addTag("GUARDAR_DATOS_EN_ROOM")
+            .build()
+
+        cadena = cadena.then(guardado)
+        cadena.enqueue()
+    }
+
+    internal fun unidadesWorker(){
+        var cadena = workManager
+            .beginUniqueWork(
+                "TRAER_DATOS_SICE",
+                ExistingWorkPolicy.REPLACE,
+                OneTimeWorkRequest.from(PullUnidadesWorker::class.java)
+            )
+
+        val guardado = OneTimeWorkRequestBuilder<SaveUnidadesWorker>()
             .addTag("GUARDAR_DATOS_EN_ROOM")
             .build()
 

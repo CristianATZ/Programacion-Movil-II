@@ -373,6 +373,8 @@ suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: Nav
 suspend fun obtenerCalificaciones(viewModel: AlumnoViewModel, navController: NavController){
     val TAG = "HOME SCREEN"
     Log.d(TAG, "Invocando obtenerCalififcaciones")
+    // INVOACION DEL WORKER
+    viewModel.unidadesWorker()
     var unidades = viewModel.getCalifByUnidad()
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
@@ -385,9 +387,9 @@ suspend fun obtenerCalifFinales(viewModel: AlumnoViewModel, navController: NavCo
 }
 
 suspend fun obtenerKardexConPromedioByAlumno(viewModel: AlumnoViewModel, navController: NavController){
-    var cardex = viewModel.getCardexByAlumno()
     // INVOCACION DEL WORKER
     viewModel.cardexWorker()
+    var cardex = viewModel.getCardexByAlumno()
     var encodedInfo = Uri.encode(cardex)
     navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
 }
