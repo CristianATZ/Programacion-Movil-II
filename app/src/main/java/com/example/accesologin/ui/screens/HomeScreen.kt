@@ -386,6 +386,8 @@ suspend fun obtenerCalifFinales(viewModel: AlumnoViewModel, navController: NavCo
 
 suspend fun obtenerKardexConPromedioByAlumno(viewModel: AlumnoViewModel, navController: NavController){
     var cardex = viewModel.getCardexByAlumno()
+    // INVOCACION DEL WORKER
+    viewModel.cardexWorker()
     var encodedInfo = Uri.encode(cardex)
     navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
 }

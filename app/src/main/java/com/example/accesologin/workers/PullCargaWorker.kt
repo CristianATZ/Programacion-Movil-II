@@ -18,11 +18,11 @@ class PullCargaWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(c
 
         return try {
             val carga = parseCargaList(alumnosRepository.obtenerCarga())
-            Log.d("HOLA DESDE EL WORKER", carga.toString())
+            //Log.d("HOLA DESDE EL WORKER", carga.toString())
             var outputData = workDataOf(
                 "carga" to carga.toString()
             )
-            Log.d("SALUDAZOS HASTA CULIACAN", outputData.toString())
+            //Log.d("SALUDAZOS HASTA CULIACAN", outputData.toString())
             Result.success(outputData)
         } catch (exception: Exception){
             Result.failure()
