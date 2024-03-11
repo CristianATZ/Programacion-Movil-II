@@ -12,10 +12,12 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
+import com.example.accesologin.workers.PullCardexPromWorker
 import com.example.accesologin.workers.PullCardexWorker
 import com.example.accesologin.workers.PullCargaWorker
 import com.example.accesologin.workers.PullFinalesWorker
 import com.example.accesologin.workers.PullUnidadesWorker
+import com.example.accesologin.workers.SaveCardexPromWorker
 import com.example.accesologin.workers.SaveCardexWorker
 import com.example.accesologin.workers.SaveCargaWorker
 import com.example.accesologin.workers.SaveFinalesWorker
@@ -81,6 +83,22 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
             )
 
         val guardado = OneTimeWorkRequestBuilder<SaveCardexWorker>()
+            .addTag("GUARDAR_DATOS_EN_ROOM")
+            .build()
+
+        cadena = cadena.then(guardado)
+        cadena.enqueue()
+    }
+
+    internal fun cardexPromWorker(){
+        var cadena = workManager
+            .beginUniqueWork(
+                "TRAER_DATOS_SICE",
+                ExistingWorkPolicy.REPLACE,
+                OneTimeWorkRequest.from(PullCardexPromWorker::class.java)
+            )
+
+        val guardado = OneTimeWorkRequestBuilder<SaveCardexPromWorker>()
             .addTag("GUARDAR_DATOS_EN_ROOM")
             .build()
 
