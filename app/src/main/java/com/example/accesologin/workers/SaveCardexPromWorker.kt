@@ -21,6 +21,7 @@ class SaveCardexPromWorker(context: Context, workerParams: WorkerParameters): Wo
         return try {
             val cardexProm = parseCardexProm(inputData.getString("cardexProm").toString())
             CoroutineScope(Dispatchers.IO).launch {
+                AlumnosContainer.getUserCardexDao().deleteCardex()
                 AlumnosContainer.getUserCardexPromDao().insertCardexProm(
                     CardexProm_Entity(
                         id = 0,

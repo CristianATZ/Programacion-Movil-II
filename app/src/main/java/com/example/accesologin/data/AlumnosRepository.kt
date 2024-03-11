@@ -66,6 +66,7 @@ class NetworkAlumnosRepository(
                 //Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
                 if(result.acceso.equals("true")){
                     CoroutineScope(Dispatchers.IO).launch {
+                        AlumnosContainer.getUserLoginDao().deleteAccesos()
                         AlumnosContainer.getUserLoginDao().insertAcceso(
                             Acceso_Entity(
                                 id = 0,

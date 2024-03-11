@@ -22,6 +22,7 @@ class SaveFinalesWorker(context: Context, workerParams: WorkerParameters): Worke
         return try {
             val califs = parseCalifList(inputData.getString("califs").toString())
             CoroutineScope(Dispatchers.IO).launch {
+                AlumnosContainer.getUserCalifFinalDao().deleteFinales()
                 for (materia in califs){
                     AlumnosContainer.getUserCalifFinalDao().insertCalifFinal(
                         CalifFinal_Entity(

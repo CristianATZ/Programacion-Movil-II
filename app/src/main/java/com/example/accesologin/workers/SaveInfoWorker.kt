@@ -19,6 +19,7 @@ class SaveInfoWorker(context: Context, workerParams: WorkerParameters): Worker(c
 
         return try {
             CoroutineScope(Dispatchers.IO).launch {
+                AlumnosContainer.getUserInfoDao().deleteAlumnos()
                 AlumnosContainer.getUserInfoDao().insertAlumno(
                     Alumno_Entity(
                         id = 0,

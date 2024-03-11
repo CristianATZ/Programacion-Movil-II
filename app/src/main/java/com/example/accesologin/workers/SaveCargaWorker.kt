@@ -23,6 +23,7 @@ class SaveCargaWorker(context: Context, workerParams: WorkerParameters):  Worker
             val carga = parseCargaList(inputData.getString("carga").toString())
             Log.d("SaveCargaWorker", carga.toString())
             CoroutineScope(Dispatchers.IO).launch {
+                AlumnosContainer.getUserCargaDao().deleteCargas()
                 for (materia in carga){
                     AlumnosContainer.getUserCargaDao().insertCarga(
                         Carga_Entity(

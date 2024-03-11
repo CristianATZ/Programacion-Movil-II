@@ -1,6 +1,7 @@
 package com.example.accesologin.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.accesologin.model.Acceso_Entity
@@ -18,6 +19,9 @@ interface AccesoDao {
 
     @Query("SELECT * FROM acceso WHERE matricula=:mat AND contrasenia=:cont")
     fun getAccess(mat: String, cont: String): Acceso_Entity?
+
+    @Query("DELETE FROM acceso")
+    suspend fun deleteAccesos()
 }
 
 @Dao
@@ -27,6 +31,9 @@ interface AlumnoDao {
 
     @Query("SELECT * FROM alumno")
     fun getAlumno(): Alumno_Entity
+
+    @Query("DELETE FROM alumno")
+    suspend fun deleteAlumnos()
 }
 
 @Dao
@@ -34,28 +41,42 @@ interface CargaDao {
     @Insert
     fun insertCarga(item: Carga_Entity)
 
+    @Query("DELETE FROM carga")
+    suspend fun deleteCargas()
 }
 
 @Dao
 interface CalifUnidadDao {
     @Insert
     fun insertCalifUnidad(item: CalifUnidad_Entity)
+
+    @Query("DELETE FROM califUnidad")
+    suspend fun deleteUnidades()
 }
 
 @Dao
 interface CalifFinalDao {
     @Insert
     fun insertCalifFinal(item: CalifFinal_Entity)
+
+    @Query("DELETE FROM califFinal")
+    suspend fun deleteFinales()
 }
 
 @Dao
 interface CardexDao {
     @Insert
     fun insertCardex(item: Cardex_Entity)
+
+    @Query("DELETE FROM cardex")
+    suspend fun deleteCardex()
 }
 
 @Dao
 interface CardexPromDao {
     @Insert
     fun insertCardexProm(item: CardexProm_Entity)
+
+    @Query("DELETE FROM cardexProm")
+    suspend fun deleteCardexProm()
 }

@@ -22,6 +22,7 @@ class SaveUnidadesWorker(context: Context, workerParams: WorkerParameters): Work
         return try {
             val califs = parseUnidadList(inputData.getString("califs").toString())
             CoroutineScope(Dispatchers.IO).launch {
+                AlumnosContainer.getUserCalifUnidadDao().deleteUnidades()
                 for (materia in califs){
                     AlumnosContainer.getUserCalifUnidadDao().insertCalifUnidad(
                         CalifUnidad_Entity(

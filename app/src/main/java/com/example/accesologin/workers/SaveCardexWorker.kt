@@ -21,6 +21,7 @@ class SaveCardexWorker(context: Context, workerParams: WorkerParameters): Worker
         return try {
             val cardex = parseCardexList(inputData.getString("cardex").toString())
             CoroutineScope(Dispatchers.IO).launch {
+                AlumnosContainer.getUserCardexDao().deleteCardex()
                 for (materia in cardex){
                     AlumnosContainer.getUserCardexDao().insertCardex(
                         Cardex_Entity(
