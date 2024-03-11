@@ -361,8 +361,8 @@ fun parseLoginAlumno(input: String): Acceso {
 }
 
 suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: NavController){
-    val TAG = "HOME SCREEN"
-    Log.d(TAG, "Invocando obtenerCargaAcademica")
+    //val TAG = "HOME SCREEN"
+    //Log.d(TAG, "Invocando obtenerCargaAcademica")
     // INVOCACION DEL WORKER
     viewModel.cargaWorker()
     var schedule = viewModel.getAcademicSchedule()
@@ -371,8 +371,8 @@ suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: Nav
 }
 
 suspend fun obtenerCalificaciones(viewModel: AlumnoViewModel, navController: NavController){
-    val TAG = "HOME SCREEN"
-    Log.d(TAG, "Invocando obtenerCalififcaciones")
+    //val TAG = "HOME SCREEN"
+    //Log.d(TAG, "Invocando obtenerCalififcaciones")
     // INVOACION DEL WORKER
     viewModel.unidadesWorker()
     var unidades = viewModel.getCalifByUnidad()
@@ -381,6 +381,7 @@ suspend fun obtenerCalificaciones(viewModel: AlumnoViewModel, navController: Nav
 }
 
 suspend fun obtenerCalifFinales(viewModel: AlumnoViewModel, navController: NavController){
+    viewModel.finalesWorker()
     var unidades = viewModel.getCalifFinal()
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.FinalsCalifScreen.route + encodedInfo)
