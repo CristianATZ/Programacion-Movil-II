@@ -1,13 +1,58 @@
 package com.example.accesologin.data
 
 import com.example.accesologin.model.Acceso_Entity
+import com.example.accesologin.model.Alumno_Entity
+import com.example.accesologin.model.CalifFinal_Entity
+import com.example.accesologin.model.CalifUnidad_Entity
+import com.example.accesologin.model.CardexProm_Entity
+import com.example.accesologin.model.Cardex_Entity
+import com.example.accesologin.model.Carga_Entity
 
 interface RepositoryDB {
-    suspend fun getAccesDB(matricula: String, password: String):  Acceso_Entity?
+    fun getAccesDB(matricula: String, password: String):  Acceso_Entity
+    fun getAlumnoDB(): Alumno_Entity
+    fun getCargaDB(): List<Carga_Entity>
+    fun getCalifUnidadDB(): List<CalifUnidad_Entity>
+    fun getCalifFinalDB(): List<CalifFinal_Entity>
+    fun getCardexDB(): List<Cardex_Entity>
+    fun getCardexPromDB(): CardexProm_Entity
 }
 
 class OfflineRepository(
-    private val accesoDao: AccesoDao
+    private val accesoDao: AccesoDao,
+    private val alumnoDao: AlumnoDao,
+    private val cargaDao: CargaDao,
+    private val califUnidadDao: CalifUnidadDao,
+    private val califFinalDao: CalifFinalDao,
+    private val cardexDao: CardexDao,
+    private val cardexPromDao: CardexPromDao
 ): RepositoryDB {
-    override suspend fun getAccesDB(matricula: String, contrasenia: String): Acceso_Entity ?= accesoDao.getAccess(matricula, contrasenia)
+    //override suspend fun getAccesDB(matricula: String, contrasenia: String): Acceso_Entity = accesoDao.getAccess(matricula, contrasenia)
+    override fun getAccesDB(matricula: String, password: String): Acceso_Entity {
+        return accesoDao.getAccess()
+    }
+
+    override fun getAlumnoDB(): Alumno_Entity {
+        return alumnoDao.getAlumno()
+    }
+
+    override fun getCargaDB(): List<Carga_Entity> {
+        return cargaDao.getCarga()
+    }
+
+    override fun getCalifUnidadDB(): List<CalifUnidad_Entity> {
+        return califUnidadDao.getCalifsUnidad()
+    }
+
+    override fun getCalifFinalDB(): List<CalifFinal_Entity> {
+        return califFinalDao.getCalifsFinal()
+    }
+
+    override fun getCardexDB(): List<Cardex_Entity> {
+        return cardexDao.getCardex()
+    }
+
+    override fun getCardexPromDB(): CardexProm_Entity {
+        return cardexPromDao.getCardexProm()
+    }
 }
