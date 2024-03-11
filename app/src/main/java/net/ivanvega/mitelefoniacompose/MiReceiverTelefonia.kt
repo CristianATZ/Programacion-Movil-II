@@ -16,10 +16,24 @@ import android.widget.Toast
 
 
 class MiReceiverTelefonia(viewModel: ScreenViewModel) : BroadcastReceiver() {
-    override fun onReceive(p0: Context?, intent: Intent?) {
-        val action: String? = intent?.action
-        if (action == TelephonyManager.ACTION_PHONE_STATE_CHANGED) {
-            Log.d("ESTADO", action.toString())
+    var manager: TelephonyManager? = null
+    var context: Context? = null
+    var _viewModel = viewModel
+
+    override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action
+        this.context = context
+
+        if (action == TelephonyManager.EXTRA_INCOMING_NUMBER) {
+            manager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            // Extrae el numero que esta llamado
+            val numero = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
+            Log.d("Numero",numero.toString())
+            // Envia el mensaje
+            if (numero != null) {
+                // mandar mensaje al numero
+                _viewModel.EnviarMensaje(numero,context)
+            }
         }
     }
 
