@@ -304,7 +304,7 @@ private fun validacion(viewModel: LoginViewModel): Boolean {
     return !viewModel.matricula.equals("") && !viewModel.password.equals("")
 }
 
-private fun conexionInternet(context: Context): Boolean {
+fun conexionInternet(context: Context): Boolean {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if(connectivityManager != null){
         val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)

@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -77,6 +78,7 @@ fun HomeScreen(
     val estudiante = text?.split("(", ")")?.get(1)?.split(",")
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var openCloseSesion by remember {
         mutableStateOf(false)
@@ -128,7 +130,11 @@ fun HomeScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCargaAcademica(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCargaAcademica(viewModelAcademic, navController)
+                                } else{
+                                    obtenerCargaAcademicaDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -366,6 +372,12 @@ suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: Nav
     // INVOCACION DEL WORKER
     viewModel.cargaWorker()
     var schedule = viewModel.getAcademicSchedule()
+    var encodedInfo = Uri.encode(schedule)
+    navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
+}
+
+suspend fun obtenerCargaAcademicaDB(viewModel: AlumnoViewModel, navController: NavController){
+    var schedule = viewModel.getAcademicScheduleDB()
     var encodedInfo = Uri.encode(schedule)
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
 }

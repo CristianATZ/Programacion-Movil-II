@@ -27,7 +27,9 @@ import kotlinx.coroutines.async
 
 class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewModel() {
     private val workManager = WorkManager.getInstance()
+    private val db = AlumnosContainer.getDataBase()
 
+    // OBTENCION DE INFO DEL SICE ------------------------------------
     suspend fun getAcademicSchedule(): String {
         val schedule = viewModelScope.async{
             alumnosRepository.obtenerCarga()
@@ -54,6 +56,15 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
             alumnosRepository.obtenerCardex()
         }
         return cardex.await()
+    }
+
+    // OBTENCION DE INFO DE LA BDD
+    suspend fun getAcademicScheduleDB(): String {
+        return try {
+            db.UserCargaDao().getCarga().toString()
+        } catch (e: Exception){
+            ""
+        }
     }
 
 
