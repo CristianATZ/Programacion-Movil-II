@@ -18,14 +18,14 @@ data class Acceso_Entity @RequiresApi(Build.VERSION_CODES.O) constructor(
 
 @Entity(tableName = "alumno")
 data class Alumno_Entity @RequiresApi(Build.VERSION_CODES.O) constructor(
-    @PrimaryKey(true) val id: Int = 0,
+    //@PrimaryKey(true) val id: Int = 0,
     @ColumnInfo(name = "nombre") val nombre: String = "",
     @ColumnInfo(name = "fechaReins") val fechaReins: String = "",
     @ColumnInfo(name = "semActual") val semActual: String = "",
     @ColumnInfo(name = "cdtosAcumulados") val cdtosAcumulados: String = "",
     @ColumnInfo(name = "cdtosActuales") val cdtosActuales: String = "",
     @ColumnInfo(name = "carrera") val carrera: String = "",
-    @ColumnInfo(name = "matricula") val matricula: String = "",
+    @PrimaryKey val matricula: String = "",
     @ColumnInfo(name = "especialidad") val especialidad: String = "",
     @ColumnInfo(name = "modEducativo") val modEducativo: String = "",
     @ColumnInfo(name = "adeudo") val adeudo: String = "",

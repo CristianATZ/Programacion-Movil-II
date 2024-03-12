@@ -22,7 +22,7 @@ class SaveInfoWorker(context: Context, workerParams: WorkerParameters): Worker(c
                 AlumnosContainer.getUserInfoDao().deleteAlumnos()
                 AlumnosContainer.getUserInfoDao().insertAlumno(
                     Alumno_Entity(
-                        id = 0,
+                        //id = 0,
                         nombre = inputData.getString("nombre").toString(),
                         fechaReins = inputData.getString("fechaReins").toString(),
                         semActual = inputData.getString("semActual").toString(),
