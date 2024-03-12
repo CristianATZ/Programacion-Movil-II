@@ -10,7 +10,7 @@ import com.example.accesologin.model.Carga_Entity
 
 interface RepositoryDB {
     suspend fun getAccesDB(matricula: String, password: String):  Acceso_Entity
-    fun getAlumnoDB(): Alumno_Entity
+    suspend fun getAlumnoDB(): Alumno_Entity
     fun getCargaDB(): List<Carga_Entity>
     fun getCalifUnidadDB(): List<CalifUnidad_Entity>
     fun getCalifFinalDB(): List<CalifFinal_Entity>
@@ -32,7 +32,7 @@ class OfflineRepository(
         return accesoDao.getAccess(matricula, password)
     }
 
-    override fun getAlumnoDB(): Alumno_Entity {
+    override suspend fun getAlumnoDB(): Alumno_Entity {
         return alumnoDao.getAlumno()
     }
 

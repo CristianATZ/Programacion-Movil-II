@@ -28,8 +28,8 @@ class LoginViewModel(
     private val alumnosRepository: AlumnosRepository,
     private val offlineRepository: OfflineRepository
 ): ViewModel() {
-    var matricula by mutableStateOf("")
-    var password by mutableStateOf("")
+    var matricula by mutableStateOf("s20120154")
+    var password by mutableStateOf("8s_RH-")
     private val db = AlumnosContainer.getDataBase()
 
     // Actualizar matricula
@@ -76,15 +76,18 @@ class LoginViewModel(
 
     // METODOS DEL REPOSITORIO OFFLINE
     suspend fun getAccessDB(matricula: String, password: String): Boolean{
-        try {
-            viewModelScope.launch {
-                Log.d("LoginViewModel", db.UserLoginDao().getAccess(matricula, password).toString())
-            }
-            //return offlineRepository.getAccesDB(matricula, password).acceso.equals(true)
-            return true
+        return try {
+            db.UserLoginDao().getAccess(matricula, password).acceso == "true"
         } catch (exception: Exception){
-            Log.d("LoginViewModel", exception.toString())
-            return false
+            false
+        }
+    }
+
+    suspend fun getInfoDB(): String {
+        return try {
+            db.UserInfoDao().getAlumno().toString()
+        } catch (e: Exception){
+            ""
         }
     }
 

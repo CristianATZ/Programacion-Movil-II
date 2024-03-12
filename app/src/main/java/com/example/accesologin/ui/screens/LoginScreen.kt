@@ -190,20 +190,14 @@ fun LoginScreen(
                             else {
                                 // openNoInternet = !openNoInternet
                                 scope.launch {
-                                    try {
-                                        val acceso = viewModel.getAccessDB(viewModel.matricula, viewModel.password)
-                                    }catch (Exception1 : Exception)
-                                    {
-                                        Log.d("ERROR",Exception1.toString())
-                                    }
+                                    val acceso = viewModel.getAccessDB(viewModel.matricula, viewModel.password)
 
-                                    /*
                                     if(acceso){
-                                        obtenerInfoDB(navController)
+                                        obtenerInfoDB(viewModel, navController)
                                     }
                                     else{
                                         openNoInternet = !openNoInternet
-                                    }*/
+                                    }
                                 }
                             }
                         } else {
@@ -343,7 +337,10 @@ suspend fun obtenerInfo(viewModel: LoginViewModel, navController: NavController)
     navController.navigate(AppScreens.HomeScreen.route + encodedInfo)
 }
 
-fun obtenerInfoDB(navController: NavController){
+suspend fun obtenerInfoDB(viewModel: LoginViewModel, navController: NavController){
     // MANDAR INFO POR AQUI
-    navController.navigate(AppScreens.HomeScreen.route)
+    var info = viewModel.getInfoDB()
+    Log.d("noInternet",info)
+    var encodedInfo = Uri.encode(info)
+    navController.navigate(AppScreens.HomeScreen.route + encodedInfo)
 }
