@@ -59,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -86,7 +87,7 @@ fun AcademicScheduleScreen(
 ){
 
     var carga = parseCargaList(text.toString())
-
+    val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -113,8 +114,12 @@ fun AcademicScheduleScreen(
                         icon = { Icon(Icons.Outlined.Info, null) },
                         selected = false,
                         onClick = {
-                            scope.launch { 
-                                obtenerInfo(viewModelLogin, navController)
+                            scope.launch {
+                                if(conexionInternet(context)){
+                                    obtenerInfo(viewModelLogin, navController)
+                                } else {
+                                    obtenerInfoDB(viewModelLogin, navController)
+                                }
                             }
                         }
                     )
@@ -137,7 +142,11 @@ fun AcademicScheduleScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                } else {
+                                    obtenerKardexConPromedioByAlumnoDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -147,9 +156,12 @@ fun AcademicScheduleScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalificaciones(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalificaciones(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalificacionesDB(viewModelAcademic, navController)
+                                }
                             }
-                            //navController.navigate(AppScreens.UnitsCalifScreen.route)
                         }
                     )
                     NavigationDrawerItem(
@@ -158,7 +170,11 @@ fun AcademicScheduleScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalifFinales(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalifFinales(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalifFinalesDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )

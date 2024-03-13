@@ -132,7 +132,7 @@ fun HomeScreen(
                             scope.launch {
                                 if(conexionInternet(context)){
                                     obtenerCargaAcademica(viewModelAcademic, navController)
-                                } else{
+                                } else {
                                     obtenerCargaAcademicaDB(viewModelAcademic, navController)
                                 }
                             }
@@ -144,7 +144,11 @@ fun HomeScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                } else {
+                                    obtenerKardexConPromedioByAlumnoDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -154,9 +158,12 @@ fun HomeScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalificaciones(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalificaciones(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalificacionesDB(viewModelAcademic, navController)
+                                }
                             }
-                            //navController.navigate(AppScreens.UnitsCalifScreen.route)
                         }
                     )
                     NavigationDrawerItem(
@@ -165,7 +172,11 @@ fun HomeScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalifFinales(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalifFinales(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalifFinalesDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -392,9 +403,21 @@ suspend fun obtenerCalificaciones(viewModel: AlumnoViewModel, navController: Nav
     navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
 }
 
+suspend fun obtenerCalificacionesDB(viewModel: AlumnoViewModel, navController: NavController){
+    var unidades = viewModel.getCalifByUnidadDB()
+    var encodedInfo = Uri.encode(unidades)
+    navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
+}
+
 suspend fun obtenerCalifFinales(viewModel: AlumnoViewModel, navController: NavController){
     viewModel.finalesWorker()
     var unidades = viewModel.getCalifFinal()
+    var encodedInfo = Uri.encode(unidades)
+    navController.navigate(AppScreens.FinalsCalifScreen.route + encodedInfo)
+}
+
+suspend fun obtenerCalifFinalesDB(viewModel: AlumnoViewModel, navController: NavController){
+    var unidades = viewModel.getCalifFinalDB()
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.FinalsCalifScreen.route + encodedInfo)
 }
@@ -403,6 +426,12 @@ suspend fun obtenerKardexConPromedioByAlumno(viewModel: AlumnoViewModel, navCont
     // INVOCACION DEL WORKER
     viewModel.cardexWorker()
     var cardex = viewModel.getCardexByAlumno()
+    var encodedInfo = Uri.encode(cardex)
+    navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
+}
+
+suspend fun obtenerKardexConPromedioByAlumnoDB(viewModel: AlumnoViewModel, navController: NavController){
+    var cardex = viewModel.getCardexByAlumnoDB()
     var encodedInfo = Uri.encode(cardex)
     navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
 }

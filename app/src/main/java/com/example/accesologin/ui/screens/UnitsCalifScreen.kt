@@ -1,6 +1,8 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,20 +36,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.model.CalifFinal
+import com.example.accesologin.model.CalifUnidad_Entity
 import com.example.accesologin.model.CalificacionByUnidad
 import com.example.accesologin.model.Carga
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -60,6 +67,7 @@ fun UnitsCalifScreen(
     val calificaciones = parseUnidadList(text.toString())
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -83,7 +91,11 @@ fun UnitsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerInfo(viewModelLogin, navController)
+                                if(conexionInternet(context)){
+                                    obtenerInfo(viewModelLogin, navController)
+                                } else {
+                                    obtenerInfoDB(viewModelLogin, navController)
+                                }
                             }
                         }
                     )
@@ -93,7 +105,11 @@ fun UnitsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCargaAcademica(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCargaAcademica(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCargaAcademicaDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -103,7 +119,11 @@ fun UnitsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                } else {
+                                    obtenerKardexConPromedioByAlumnoDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -113,9 +133,10 @@ fun UnitsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                drawerState.apply {
-                                    if(isClosed) open()
-                                    else close()
+                                if(conexionInternet(context)){
+                                    obtenerCalificaciones(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalificacionesDB(viewModelAcademic, navController)
                                 }
                             }
                         }
@@ -126,7 +147,11 @@ fun UnitsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalifFinales(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalifFinales(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalifFinalesDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -168,6 +193,9 @@ fun UnitsCalifScreen(
                     Spacer(modifier = Modifier.height(70.dp))
                 }
                 item {
+                    Text(text = "Última actualización: " + calificaciones[0].fecha)
+                }
+                item {
                     for(calif in calificaciones){
                         CardCalifs(calif)
                     }
@@ -179,8 +207,14 @@ fun UnitsCalifScreen(
 
 }
 
-fun parseUnidadList(input: String): List<CalificacionByUnidad> {
-    val regex = Regex("CalificacionByUnidad\\((.*?)\\)")
+@RequiresApi(Build.VERSION_CODES.O)
+fun parseUnidadList(input: String): List<CalifUnidad_Entity> {
+    val regex =
+        if(input.contains("CalifUnidad_Entity")){
+            Regex("CalifUnidad_Entity\\((.*?)\\)")
+        } else {
+            Regex("CalificacionByUnidad\\((.*?)\\)")
+        }
 
     return regex
         .findAll(input)
@@ -190,31 +224,32 @@ fun parseUnidadList(input: String): List<CalificacionByUnidad> {
                 .map { it.split("=") }
                 .associateBy({ it[0] }, { it.getOrNull(1) ?: "" })
 
-            CalificacionByUnidad(
-                map["Observaciones"] ?: "",
-                map["C13"] ?: "",
-                map["C12"] ?: "",
-                map["C11"] ?: "",
-                map["C10"] ?: "",
-                map["C9"] ?: "",
-                map["C8"] ?: "",
-                map["C7"] ?: "",
-                map["C6"] ?: "",
-                map["C5"] ?: "",
-                map["C4"] ?: "",
-                map["C3"] ?: "",
-                map["C2"] ?: "",
-                map["C1"] ?: "",
-                map["UnidadesActivas"] ?: "",
-                map["Materia"] ?: "",
-                map["Grupo"] ?: ""
+            CalifUnidad_Entity(
+                Observaciones = map["Observaciones"] ?: "",
+                C13 = map["C13"] ?: "",
+                C12 = map["C12"] ?: "",
+                C11 = map["C11"] ?: "",
+                C10 = map["C10"] ?: "",
+                C9 = map["C9"] ?: "",
+                C8 = map["C8"] ?: "",
+                C7 = map["C7"] ?: "",
+                C6 = map["C6"] ?: "",
+                C5 = map["C5"] ?: "",
+                C4 =  map["C4"] ?: "",
+                C3 = map["C3"] ?: "",
+                C2 = map["C2"] ?: "",
+                C1 = map["C1"] ?: "",
+                UnidadesActivas = map["UnidadesActivas"] ?: "",
+                Materia = map["Materia"] ?: "",
+                Grupo =  map["Grupo"] ?: "",
+                fecha = map["fecha"] ?: SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
             )
         }.toList()
 }
 
 
 @Composable
-fun CardCalifs(calif: CalificacionByUnidad){
+fun CardCalifs(calif: CalifUnidad_Entity){
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 1.dp

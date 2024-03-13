@@ -59,11 +59,37 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
         return cardex.await()
     }
 
+
     // OBTENCION DE INFO DE LA BDD
     suspend fun getAcademicScheduleDB(): String {
         return try {
-            Log.d("AlumnoViewModel", db.UserCargaDao().getCarga().toString())
+            // Log.d("y es la marca RE-GIS-TRADA", db.UserCargaDao().getCarga().toString())
             db.UserCargaDao().getCarga().toString()
+        } catch (e: Exception){
+            ""
+        }
+    }
+
+
+    suspend fun getCardexByAlumnoDB(): String {
+        return try {
+            db.UserCardexDao().getCardex().toString()
+        } catch (e: Exception){
+            ""
+        }
+    }
+
+    suspend fun getCalifByUnidadDB(): String {
+        return try {
+            db.UserCalifUnidadDao().getCalifsUnidad().toString()
+        } catch (e: Exception){
+            ""
+        }
+    }
+
+    suspend fun getCalifFinalDB(): String {
+        return try {
+            db.UserCalifFinalDao().getCalifsFinal().toString()
         } catch (e: Exception){
             ""
         }

@@ -1,6 +1,8 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,13 +43,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.model.CalifFinal
+import com.example.accesologin.model.CalifFinal_Entity
 import com.example.accesologin.model.Carga
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -57,7 +64,7 @@ fun FinalsCalifScreen(
     viewModelLogin: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ){ 
     val califFinales = parseCalifList(text.toString())
-
+    val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -83,7 +90,11 @@ fun FinalsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerInfo(viewModelLogin, navController)
+                                if(conexionInternet(context)){
+                                    obtenerInfo(viewModelLogin, navController)
+                                } else {
+                                    obtenerInfoDB(viewModelLogin, navController)
+                                }
                             }
                         }
                     )
@@ -93,7 +104,11 @@ fun FinalsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCargaAcademica(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCargaAcademica(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCargaAcademicaDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -103,7 +118,11 @@ fun FinalsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerKardexConPromedioByAlumno(viewModelAcademic, navController)
+                                } else {
+                                    obtenerKardexConPromedioByAlumnoDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -113,7 +132,11 @@ fun FinalsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalificaciones(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalificaciones(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalificacionesDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -123,9 +146,10 @@ fun FinalsCalifScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                drawerState.apply {
-                                    if(isClosed) open()
-                                    else close()
+                                if(conexionInternet(context)){
+                                    obtenerCalifFinales(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalifFinalesDB(viewModelAcademic, navController)
                                 }
                             }
                         }
@@ -168,6 +192,9 @@ fun FinalsCalifScreen(
                     Spacer(modifier = Modifier.height(70.dp))
                 }
                 item {
+                    Text(text = "Última actualización: " + califFinales[0].fecha)
+                }
+                item {
                     for(calif in califFinales){
                         CardFinals(calif)
                     }
@@ -180,8 +207,15 @@ fun FinalsCalifScreen(
 }
 
 
-fun parseCalifList(input: String): List<CalifFinal> {
-    val califRegex = Regex("CalifFinal\\((.*?)\\)")
+@RequiresApi(Build.VERSION_CODES.O)
+fun parseCalifList(input: String): List<CalifFinal_Entity> {
+    val califRegex =
+        if(input.contains("CalifFinal_Entity")){
+            Regex("CalifFinal_Entity\\((.*?)\\)")
+        } else {
+            Regex("CalifFinal\\((.*?)\\)")
+        }
+
 
     return califRegex
         .findAll(input)
@@ -190,19 +224,20 @@ fun parseCalifList(input: String): List<CalifFinal> {
             val califMap = califParams.split(", ")
                 .map { it.split("=") }
                 .associateBy({ it[0] }, { it.getOrNull(1) ?: "" })
-            CalifFinal(
-                califMap["calif"] ?: "",
-                califMap["acred"] ?: "",
-                califMap["grupo"] ?: "",
-                califMap["materia"] ?: "",
-                califMap["Observaciones"] ?: ""
+            CalifFinal_Entity(
+                calif = califMap["calif"] ?: "",
+                acred = califMap["acred"] ?: "",
+                grupo = califMap["grupo"] ?: "",
+                materia = califMap["materia"] ?: "",
+                Observaciones = califMap["Observaciones"] ?: "",
+                fecha = califMap["fecha"] ?: SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
             )
         }.toList()
 }
 
 
 @Composable
-fun CardFinals(calif: CalifFinal){
+fun CardFinals(calif: CalifFinal_Entity){
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 1.dp

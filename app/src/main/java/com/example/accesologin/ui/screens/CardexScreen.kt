@@ -1,6 +1,8 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,12 +48,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.model.Cardex
 import com.example.accesologin.model.CardexProm
+import com.example.accesologin.model.Cardex_Entity
 import com.example.accesologin.model.Carga
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -63,7 +70,7 @@ fun CardexScreen(
     var obj = text.toString().split("/")
     val prom = parseCardexProm(obj[0])
     val kardex = parseCardexList(obj[1])
-
+    val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -89,7 +96,11 @@ fun CardexScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerInfo(viewModelLogin, navController)
+                                if(conexionInternet(context)){
+                                    obtenerInfo(viewModelLogin, navController)
+                                } else {
+                                    obtenerInfoDB(viewModelLogin, navController)
+                                }
                             }
                         }
                     )
@@ -99,7 +110,11 @@ fun CardexScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCargaAcademica(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCargaAcademica(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCargaAcademicaDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -122,7 +137,11 @@ fun CardexScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalificaciones(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalificaciones(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalificacionesDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -132,7 +151,11 @@ fun CardexScreen(
                         selected = false,
                         onClick = {
                             scope.launch {
-                                obtenerCalifFinales(viewModelAcademic, navController)
+                                if(conexionInternet(context)){
+                                    obtenerCalifFinales(viewModelAcademic, navController)
+                                } else {
+                                    obtenerCalifFinalesDB(viewModelAcademic, navController)
+                                }
                             }
                         }
                     )
@@ -174,6 +197,9 @@ fun CardexScreen(
                     Spacer(modifier = Modifier.height(70.dp))
                 }
                 item {
+                    Text(text = "Última actualización: " + kardex[0].fecha)
+                }
+                item {
                     if (prom != null) {
                         Text(
                             text = "Prom. General: ${prom.PromedioGral}",
@@ -197,8 +223,15 @@ fun CardexScreen(
 
 }
 
-fun parseCardexList(input: String): List<Cardex> {
-    val cargaRegex = Regex("Cardex\\((.*?)\\)")
+@RequiresApi(Build.VERSION_CODES.O)
+fun parseCardexList(input: String): List<Cardex_Entity> {
+    val cargaRegex =
+        if(input.contains("Cardex_Entity")){
+            Regex("Cardex_Entity\\((.*?)\\)")
+        } else {
+            Regex("Cardex\\((.*?)\\)")
+        }
+
 
     return cargaRegex
         .findAll(input)
@@ -207,23 +240,23 @@ fun parseCardexList(input: String): List<Cardex> {
             val cardexMap = cardexParams.split(", ")
                 .map { it.split("=") }
                 .associateBy({ it[0] }, { it.getOrNull(1) ?: "" })
-            Cardex(
-                cardexMap["S3"] ?: "",
-                cardexMap["P3"] ?: "",
-                cardexMap["A3"] ?: "",
-                cardexMap["ClvMat"] ?: "",
-                cardexMap["ClvOfiMat"] ?: "",
-                cardexMap["Materia"] ?: "",
-                cardexMap["Cdts"] ?: "",
-                cardexMap["Calif"] ?: "",
-                cardexMap["Acred"] ?: "",
-                cardexMap["S1"] ?: "",
-                cardexMap["P1"] ?: "",
-                cardexMap["A1"] ?: "",
-                cardexMap["S2"] ?: "",
-                cardexMap["P2"] ?: "",
-                cardexMap["A2"] ?: ""
-
+            Cardex_Entity(
+                ClvMat = cardexMap["ClvMat"] ?: "",
+                ClvOfiMat = cardexMap["ClvOfiMat"] ?: "",
+                Materia = cardexMap["Materia"] ?: "",
+                Cdts = cardexMap["Cdts"] ?: "",
+                Calif = cardexMap["Calif"] ?: "",
+                Acred = cardexMap["Acred"] ?: "",
+                S1 = cardexMap["S1"] ?: "",
+                P1 = cardexMap["P1"] ?: "",
+                A1 = cardexMap["A1"] ?: "",
+                S2 = cardexMap["S2"] ?: "",
+                P2 = cardexMap["P2"] ?: "",
+                A2 = cardexMap["A2"] ?: "",
+                S3 = cardexMap["S3"] ?: "",
+                P3 = cardexMap["P3"] ?: "",
+                A3 = cardexMap["A3"] ?: "",
+                fecha = cardexMap["fecha"] ?: SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
             )
         }.toList()
 }
@@ -250,7 +283,7 @@ fun parseCardexProm(input: String): CardexProm? {
 }
 
 @Composable
-fun CardCardex(materia: Cardex){
+fun CardCardex(materia: Cardex_Entity){
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 1.dp
