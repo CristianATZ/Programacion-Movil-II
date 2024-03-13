@@ -2,6 +2,7 @@ package com.example.accesologin.workers
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -48,6 +49,7 @@ class SaveCardexWorker(context: Context, workerParams: WorkerParameters): Worker
                     )
                 }
             }
+            Log.d("SaveCardexWorker", "Ingreso exitoso de cardex")
             Result.success()
         } catch (exception: Exception){
             Result.failure()

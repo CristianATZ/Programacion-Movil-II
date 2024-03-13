@@ -379,7 +379,7 @@ class NetworkAlumnosRepository(
                     }
                 }
                 //Log.d("asdasd", prom+"/"+arreglo.toString())
-                return prom+"/"+arreglo
+                return prom+"~"+arreglo
             } else
                 return ""
             return ""

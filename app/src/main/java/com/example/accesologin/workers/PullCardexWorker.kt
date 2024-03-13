@@ -2,6 +2,7 @@ package com.example.accesologin.workers
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -19,8 +20,11 @@ class PullCardexWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(
         sleep()
 
         return try {
-            val cardex = parseCardexList(alumnosRepository.obtenerCardex())
-            var outputData = workDataOf("cardex" to cardex.toString())
+            val obj = alumnosRepository.obtenerCardex().split("~")
+            val cardex = obj[1]
+            //Log.d("PullCardexWorker", cardex.toString())
+            var outputData = workDataOf("cardex" to cardex)
+            Log.d("PullCardexWorker", outputData.toString())
             Result.success(outputData)
         } catch (exception: Exception){
             Result.failure()

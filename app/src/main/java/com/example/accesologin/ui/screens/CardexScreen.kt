@@ -2,6 +2,7 @@ package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -67,9 +68,12 @@ fun CardexScreen(
     viewModelAcademic: AlumnoViewModel = viewModel(factory = AlumnoViewModel.Factory),
     viewModelLogin: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ){
-    var obj = text.toString().split("/")
-    val prom = parseCardexProm(obj[0])
-    val kardex = parseCardexList(obj[1])
+    var obj = text.toString()
+    if(obj.contains("~")){
+        obj = text.toString().split("~")[1]
+    }
+    //val prom = parseCardexProm(obj[0])
+    val kardex = parseCardexList(obj)
     val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -199,6 +203,7 @@ fun CardexScreen(
                 item {
                     Text(text = "Última actualización: " + kardex[0].fecha)
                 }
+                /*
                 item {
                     if (prom != null) {
                         Text(
@@ -211,7 +216,7 @@ fun CardexScreen(
                             fontSize = 18.sp,
                         )
                     }
-                }
+                }*/
                 item {
                     for(materia in kardex){
                         CardCardex(materia)
@@ -225,6 +230,7 @@ fun CardexScreen(
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun parseCardexList(input: String): List<Cardex_Entity> {
+    Log.d("CardexScreen", input)
     val cargaRegex =
         if(input.contains("Cardex_Entity")){
             Regex("Cardex_Entity\\((.*?)\\)")

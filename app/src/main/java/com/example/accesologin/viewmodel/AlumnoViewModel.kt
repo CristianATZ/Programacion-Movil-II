@@ -73,6 +73,7 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
 
     suspend fun getCardexByAlumnoDB(): String {
         return try {
+            Log.d("AlumnoViewModel", db.UserCardexDao().getCardex().toString())
             db.UserCardexDao().getCardex().toString()
         } catch (e: Exception){
             ""

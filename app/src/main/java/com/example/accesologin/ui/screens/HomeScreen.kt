@@ -432,6 +432,7 @@ suspend fun obtenerKardexConPromedioByAlumno(viewModel: AlumnoViewModel, navCont
 
 suspend fun obtenerKardexConPromedioByAlumnoDB(viewModel: AlumnoViewModel, navController: NavController){
     var cardex = viewModel.getCardexByAlumnoDB()
+    Log.d("HOME_SCREEN", cardex)
     var encodedInfo = Uri.encode(cardex)
     navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
 }
