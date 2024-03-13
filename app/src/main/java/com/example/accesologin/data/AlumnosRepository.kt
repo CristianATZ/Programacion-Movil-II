@@ -24,7 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.Date
 
 interface AlumnosRepository {
     suspend fun obtenerAcceso(matricula: String, password: String): Boolean
@@ -74,7 +76,7 @@ class NetworkAlumnosRepository(
                                 estatus = result.estatus,
                                 contrasenia = password,
                                 matricula = matricula,
-                                fecha = LocalDateTime.now().toString()
+                                fecha = SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
                             )
                         )
                     }

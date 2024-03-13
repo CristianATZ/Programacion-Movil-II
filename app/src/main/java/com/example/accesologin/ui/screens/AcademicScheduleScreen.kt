@@ -1,6 +1,8 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -65,10 +67,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.model.Carga
+import com.example.accesologin.model.Carga_Entity
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -78,7 +84,8 @@ fun AcademicScheduleScreen(
     viewModelAcademic: AlumnoViewModel = viewModel(factory = AlumnoViewModel.Factory),
     viewModelLogin: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ){
-    val carga = parseCargaList(text.toString())
+
+    var carga = parseCargaList(text.toString())
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -175,6 +182,9 @@ fun AcademicScheduleScreen(
                 item {
                     Spacer(modifier = Modifier.height(70.dp))
                 }
+                item {
+                    Text(text = "Última actualización: " + carga[0].fecha)
+                }
                 item{
                     for(materia in carga){
                         CardCarga(materia)
@@ -213,8 +223,15 @@ fun TopBarAcademic(
 }
 
 
-fun parseCargaList(input: String): List<Carga> {
-    val cargaRegex = Regex("Carga\\((.*?)\\)")
+@RequiresApi(Build.VERSION_CODES.O)
+fun parseCargaList(input: String): List<Carga_Entity> {
+    val cargaRegex =
+        if(input.contains("Carga_Entity")){
+            Regex("Carga_Entity\\((.*?)\\)")
+        } else {
+            Regex("Carga\\((.*?)\\)")
+        }
+
 
     return cargaRegex
         .findAll(input)
@@ -223,30 +240,30 @@ fun parseCargaList(input: String): List<Carga> {
             val cargaMap = cargaParams.split(", ")
                 .map { it.split("=") }
                 .associateBy({ it[0] }, { it.getOrNull(1) ?: "" })
-            Carga(
-                cargaMap["Semipresencial"] ?: "",
-                cargaMap["Observaciones"] ?: "",
-                cargaMap["Docente"] ?: "",
-                cargaMap["clvOficial"] ?: "",
-                cargaMap["Sabado"] ?: "",
-                cargaMap["Viernes"] ?: "",
-                cargaMap["Jueves"] ?: "",
-                cargaMap["Miercoles"] ?: "",
-                cargaMap["Martes"] ?: "",
-                cargaMap["Lunes"] ?: "",
-                cargaMap["EstadoMateria"] ?: "",
-                cargaMap["CreditosMateria"] ?: "",
-                cargaMap["Materia"] ?: "",
-                cargaMap["Grupo"] ?: ""
+            Carga_Entity(
+                Semipresencial = cargaMap["Semipresencial"] ?: "",
+                Observaciones = cargaMap["Observaciones"] ?: "",
+                Docente = cargaMap["Docente"] ?: "",
+                clvOficial = cargaMap["clvOficial"] ?: "",
+                Sabado = cargaMap["Sabado"] ?: "",
+                Viernes = cargaMap["Viernes"] ?: "",
+                Jueves = cargaMap["Jueves"] ?: "",
+                Miercoles = cargaMap["Miercoles"] ?: "",
+                Martes = cargaMap["Martes"] ?: "",
+                Lunes = cargaMap["Lunes"] ?: "",
+                EstadoMateria = cargaMap["EstadoMateria"] ?: "",
+                CreditosMateria = cargaMap["CreditosMateria"] ?: "",
+                Materia = cargaMap["Materia"] ?: "",
+                Grupo = cargaMap["Grupo"] ?: "",
+                fecha = cargaMap["fecha"] ?: SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
             )
         }.toList()
 }
 
 @Composable
 fun CardCarga(
-    materia: Carga
+    materia: Carga_Entity
 ){
-
     var open by remember {
         mutableStateOf(false)
     }

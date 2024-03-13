@@ -11,7 +11,9 @@ import com.example.accesologin.ui.screens.parseCardexList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.Date
 
 class SaveCardexWorker(context: Context, workerParams: WorkerParameters): Worker(context, workerParams) {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -41,7 +43,7 @@ class SaveCardexWorker(context: Context, workerParams: WorkerParameters): Worker
                             S3 = materia.S3,
                             P3 = materia.P3,
                             A3 = materia.A3,
-                            fecha = LocalDateTime.now().toString()
+                            fecha = SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
                         )
                     )
                 }

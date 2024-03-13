@@ -11,7 +11,9 @@ import com.example.accesologin.ui.screens.parseCalifList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.Date
 
 class SaveFinalesWorker(context: Context, workerParams: WorkerParameters): Worker(context, workerParams) {
 
@@ -32,7 +34,7 @@ class SaveFinalesWorker(context: Context, workerParams: WorkerParameters): Worke
                             grupo = materia.grupo,
                             materia = materia.materia,
                             Observaciones = materia.Observaciones,
-                            fecha = LocalDateTime.now().toString()
+                            fecha = SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
                         )
                     )
                 }

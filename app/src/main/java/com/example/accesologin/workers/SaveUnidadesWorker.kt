@@ -12,7 +12,9 @@ import com.example.accesologin.ui.screens.parseUnidadList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.Date
 
 class SaveUnidadesWorker(context: Context, workerParams: WorkerParameters): Worker(context, workerParams){
     @RequiresApi(Build.VERSION_CODES.O)
@@ -44,7 +46,7 @@ class SaveUnidadesWorker(context: Context, workerParams: WorkerParameters): Work
                             UnidadesActivas = materia.UnidadesActivas,
                             Materia = materia.Materia,
                             Grupo = materia.Grupo,
-                            fecha = LocalDateTime.now().toString()
+                            fecha = SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
                         )
                     )
                 }

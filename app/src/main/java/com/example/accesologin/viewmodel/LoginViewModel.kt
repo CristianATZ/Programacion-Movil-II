@@ -28,8 +28,8 @@ class LoginViewModel(
     private val alumnosRepository: AlumnosRepository,
     private val offlineRepository: OfflineRepository
 ): ViewModel() {
-    var matricula by mutableStateOf("s20120154")
-    var password by mutableStateOf("8s_RH-")
+    var matricula by mutableStateOf("S20120202")
+    var password by mutableStateOf("7Sf_/r6Q")
     private val db = AlumnosContainer.getDataBase()
 
     // Actualizar matricula

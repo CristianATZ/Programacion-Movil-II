@@ -11,11 +11,11 @@ import com.example.accesologin.model.Carga_Entity
 interface RepositoryDB {
     suspend fun getAccesDB(matricula: String, password: String):  Acceso_Entity
     suspend fun getAlumnoDB(): Alumno_Entity
-    fun getCargaDB(): List<Carga_Entity>
-    fun getCalifUnidadDB(): List<CalifUnidad_Entity>
-    fun getCalifFinalDB(): List<CalifFinal_Entity>
-    fun getCardexDB(): List<Cardex_Entity>
-    fun getCardexPromDB(): CardexProm_Entity
+    suspend fun getCargaDB(): List<Carga_Entity>
+    suspend fun getCalifUnidadDB(): List<CalifUnidad_Entity>
+    suspend fun getCalifFinalDB(): List<CalifFinal_Entity>
+    suspend fun getCardexDB(): List<Cardex_Entity>
+    suspend fun getCardexPromDB(): CardexProm_Entity
 }
 
 class OfflineRepository(
@@ -36,23 +36,23 @@ class OfflineRepository(
         return alumnoDao.getAlumno()
     }
 
-    override fun getCargaDB(): List<Carga_Entity> {
+    override suspend fun getCargaDB(): List<Carga_Entity> {
         return cargaDao.getCarga()
     }
 
-    override fun getCalifUnidadDB(): List<CalifUnidad_Entity> {
+    override suspend fun getCalifUnidadDB(): List<CalifUnidad_Entity> {
         return califUnidadDao.getCalifsUnidad()
     }
 
-    override fun getCalifFinalDB(): List<CalifFinal_Entity> {
+    override suspend fun getCalifFinalDB(): List<CalifFinal_Entity> {
         return califFinalDao.getCalifsFinal()
     }
 
-    override fun getCardexDB(): List<Cardex_Entity> {
+    override suspend fun getCardexDB(): List<Cardex_Entity> {
         return cardexDao.getCardex()
     }
 
-    override fun getCardexPromDB(): CardexProm_Entity {
+    override suspend fun getCardexPromDB(): CardexProm_Entity {
         return cardexPromDao.getCardexProm()
     }
 }

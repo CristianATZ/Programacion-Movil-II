@@ -11,7 +11,9 @@ import com.example.accesologin.ui.screens.parseCardexProm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.Date
 
 class SaveCardexPromWorker(context: Context, workerParams: WorkerParameters): Worker(context, workerParams) {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -31,7 +33,7 @@ class SaveCardexPromWorker(context: Context, workerParams: WorkerParameters): Wo
                         MatCursadas = cardexProm!!.MatCursadas,
                         MatAprobadas = cardexProm!!.MatAprobadas,
                         AvanceCdts = cardexProm!!.AvanceCdts,
-                        fecha = LocalDateTime.now().toString()
+                        fecha = SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
                     )
                 )
             }

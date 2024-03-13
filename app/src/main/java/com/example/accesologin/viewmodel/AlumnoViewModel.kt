@@ -1,5 +1,6 @@
 package com.example.accesologin.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -61,6 +62,7 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
     // OBTENCION DE INFO DE LA BDD
     suspend fun getAcademicScheduleDB(): String {
         return try {
+            Log.d("AlumnoViewModel", db.UserCargaDao().getCarga().toString())
             db.UserCargaDao().getCarga().toString()
         } catch (e: Exception){
             ""

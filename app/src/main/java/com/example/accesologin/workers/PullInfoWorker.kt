@@ -9,7 +9,9 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.example.accesologin.AlumnosContainer
 import com.example.accesologin.ui.screens.parseInfoAlumno
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.Date
 
 
 class PullInfoWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ctx, params) {
@@ -40,7 +42,7 @@ class PullInfoWorker(ctx: Context, params: WorkerParameters): CoroutineWorker(ct
                 "inscrito" to alumno.inscrito,
                 "estatus" to alumno.estatus,
                 "lineamiento" to alumno.lineamiento,
-                "fecha" to LocalDateTime.now().toString()
+                "fecha" to SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(Date())
             )
             //Log.d("SALUDAZOS HASTA CULIACAN", outputData.toString())
             Result.success(outputData)

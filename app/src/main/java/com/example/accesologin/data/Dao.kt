@@ -42,7 +42,7 @@ interface CargaDao {
     fun insertCarga(item: Carga_Entity)
 
     @Query("SELECT * FROM carga")
-    fun getCarga(): List<Carga_Entity>
+    suspend fun getCarga(): List<Carga_Entity>
 
     @Query("DELETE FROM carga")
     suspend fun deleteCargas()
@@ -54,7 +54,7 @@ interface CalifUnidadDao {
     fun insertCalifUnidad(item: CalifUnidad_Entity)
 
     @Query("SELECT * FROM califUnidad")
-    fun getCalifsUnidad(): List<CalifUnidad_Entity>
+    suspend fun getCalifsUnidad(): List<CalifUnidad_Entity>
 
     @Query("DELETE FROM califUnidad")
     suspend fun deleteUnidades()
@@ -66,7 +66,7 @@ interface CalifFinalDao {
     fun insertCalifFinal(item: CalifFinal_Entity)
 
     @Query("SELECT * FROM califFinal")
-    fun getCalifsFinal(): List<CalifFinal_Entity>
+    suspend fun getCalifsFinal(): List<CalifFinal_Entity>
 
     @Query("DELETE FROM califFinal")
     suspend fun deleteFinales()
@@ -78,7 +78,7 @@ interface CardexDao {
     fun insertCardex(item: Cardex_Entity)
 
     @Query("SELECT * FROM cardex")
-    fun getCardex(): List<Cardex_Entity>
+    suspend fun getCardex(): List<Cardex_Entity>
 
     @Query("DELETE FROM cardex")
     suspend fun deleteCardex()
@@ -90,7 +90,7 @@ interface CardexPromDao {
     fun insertCardexProm(item: CardexProm_Entity)
 
     @Query("SELECT * FROM cardexProm")
-    fun getCardexProm(): CardexProm_Entity
+    suspend fun getCardexProm(): CardexProm_Entity
 
     @Query("DELETE FROM cardexProm")
     suspend fun deleteCardexProm()
