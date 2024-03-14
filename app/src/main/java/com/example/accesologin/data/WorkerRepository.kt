@@ -13,6 +13,7 @@ import com.example.accesologin.workers.PullFinalesWorker
 import com.example.accesologin.workers.PullInfoWorker
 import com.example.accesologin.workers.PullUnidadesWorker
 import com.example.accesologin.workers.SaveCardexPromWorker
+import com.example.accesologin.workers.SaveCardexWorker
 import com.example.accesologin.workers.SaveCargaWorker
 import com.example.accesologin.workers.SaveFinalesWorker
 import com.example.accesologin.workers.SaveInfoWorker
@@ -76,7 +77,7 @@ class WorkerSupervisor(context: Context): WorkerRepository {
             .addTag("PullCardexWorker")
             .build()
 
-        var saveCardex = OneTimeWorkRequestBuilder<SaveCargaWorker>()
+        var saveCardex = OneTimeWorkRequestBuilder<SaveCardexWorker>()
             .addTag("SaveCardexWorker")
             .build()
 
@@ -105,11 +106,11 @@ class WorkerSupervisor(context: Context): WorkerRepository {
 
     override fun unidadesWorker() {
         var pullUnidades = OneTimeWorkRequestBuilder<PullUnidadesWorker>()
-            .addTag("PullUnidades")
+            .addTag("PullUnidadesWorker")
             .build()
 
         var saveUnidades = OneTimeWorkRequestBuilder<SaveUnidadesWorker>()
-            .addTag("SaveUnidades")
+            .addTag("SaveUnidadesWorker")
             .build()
 
         workManager.beginUniqueWork(
@@ -121,11 +122,11 @@ class WorkerSupervisor(context: Context): WorkerRepository {
 
     override fun finalesWorker() {
         var pullFinales = OneTimeWorkRequestBuilder<PullFinalesWorker>()
-            .addTag("PullFinales")
+            .addTag("PullFinalesWorker")
             .build()
 
         var saveFinales = OneTimeWorkRequestBuilder<SaveFinalesWorker>()
-            .addTag("SaveFinales")
+            .addTag("SaveFinalesWorker")
             .build()
 
         workManager.beginUniqueWork(

@@ -32,6 +32,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.model.CalifFinal
@@ -48,6 +50,9 @@ import com.example.accesologin.model.Carga
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
+import com.example.accesologin.viewmodel.WorkerCargaState
+import com.example.accesologin.viewmodel.WorkerFinalsState
+import com.example.accesologin.viewmodel.WorkerUnitsState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -67,6 +72,7 @@ fun FinalsCalifScreen(
     val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val uiStateFinales by viewModelAcademic.workerUiStateFinals.collectAsStateWithLifecycle()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -192,7 +198,22 @@ fun FinalsCalifScreen(
                     Spacer(modifier = Modifier.height(70.dp))
                 }
                 item {
-                    Text(text = "Última actualización: " + califFinales[0].fecha)
+                    Text(text =
+                        when(uiStateFinales){
+                            is WorkerFinalsState.Default -> {
+                                "No se ha sincronizado con SICENet"
+                            }
+                            is WorkerFinalsState.Loading -> {
+                                "Sincronizando con SICENet..."
+                            }
+                            is WorkerFinalsState.Complete -> {
+                                if(conexionInternet(context)) "Última actualización: " + SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(
+                                    Date()
+                                )
+                                else "Última actualización: " + califFinales[0].fecha
+                            }
+                        }
+                    )
                 }
                 item {
                     for(calif in califFinales){

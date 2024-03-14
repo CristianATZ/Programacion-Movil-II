@@ -65,12 +65,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.accesologin.model.Carga
 import com.example.accesologin.model.Carga_Entity
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
+import com.example.accesologin.viewmodel.WorkerCargaState
+import com.example.accesologin.viewmodel.WorkerInfoState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -90,6 +93,7 @@ fun AcademicScheduleScreen(
     val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val uiStateCarga by viewModelAcademic.workerUiStateCarga.collectAsStateWithLifecycle()
 
     var dayList = listOf("Lun","Mar","Mie","Jue","Vie")
 
@@ -199,7 +203,22 @@ fun AcademicScheduleScreen(
                     Spacer(modifier = Modifier.height(70.dp))
                 }
                 item {
-                    Text(text = "Última actualización: " + carga[0].fecha)
+                    Text(text =
+                        when(uiStateCarga){
+                            is WorkerCargaState.Default -> {
+                                "No se ha sincronizado con SICENet"
+                            }
+                            is WorkerCargaState.Loading -> {
+                                "Sincronizando con SICENet..."
+                            }
+                            is WorkerCargaState.Complete -> {
+                                if(conexionInternet(context)) "Última actualización: " + SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(
+                                    Date()
+                                )
+                                else "Última actualización: " + carga[0].fecha
+                            }
+                        }
+                    )
                 }
                 item{
                     for(materia in carga){
