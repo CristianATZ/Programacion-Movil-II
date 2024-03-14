@@ -404,37 +404,27 @@ fun parseLoginAlumno(input: String): Acceso {
 }
 
 suspend fun obtenerCargaAcademica(viewModel: AlumnoViewModel, navController: NavController){
-    //val TAG = "HOME SCREEN"
-    //Log.d(TAG, "Invocando obtenerCargaAcademica")
-    // INVOCACION DEL WORKER
     viewModel.cargaWorker()
     var schedule = viewModel.getAcademicSchedule()
-    Log.d("HOMESCREEN", schedule)
     var encodedInfo = Uri.encode(schedule)
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
 }
 
 suspend fun obtenerCargaAcademicaDB(viewModel: AlumnoViewModel, navController: NavController){
     var schedule = viewModel.getAcademicScheduleDB()
-    Log.d("HOMESCREEN", schedule)
     var encodedInfo = Uri.encode(schedule)
     navController.navigate(AppScreens.AcademicScheduleScreen.route + encodedInfo)
 }
 
 suspend fun obtenerCalificaciones(viewModel: AlumnoViewModel, navController: NavController){
-    //val TAG = "HOME SCREEN"
-    //Log.d(TAG, "Invocando obtenerCalififcaciones")
-    // INVOACION DEL WORKER
     viewModel.unidadesWorker()
     var unidades = viewModel.getCalifByUnidad()
-    Log.d("HOMESCREEN", unidades)
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
 }
 
 suspend fun obtenerCalificacionesDB(viewModel: AlumnoViewModel, navController: NavController){
     var unidades = viewModel.getCalifByUnidadDB()
-    Log.d("HOMESCREEN", unidades)
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.UnitsCalifScreen.route + encodedInfo)
 }
@@ -442,30 +432,25 @@ suspend fun obtenerCalificacionesDB(viewModel: AlumnoViewModel, navController: N
 suspend fun obtenerCalifFinales(viewModel: AlumnoViewModel, navController: NavController){
     viewModel.finalesWorker()
     var unidades = viewModel.getCalifFinal()
-    Log.d("HOMESCREEN", unidades)
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.FinalsCalifScreen.route + encodedInfo)
 }
 
 suspend fun obtenerCalifFinalesDB(viewModel: AlumnoViewModel, navController: NavController){
     var unidades = viewModel.getCalifFinalDB()
-    Log.d("HOMESCREEN", unidades)
     var encodedInfo = Uri.encode(unidades)
     navController.navigate(AppScreens.FinalsCalifScreen.route + encodedInfo)
 }
 
 suspend fun obtenerKardexConPromedioByAlumno(viewModel: AlumnoViewModel, navController: NavController){
-    // INVOCACION DEL WORKER
     viewModel.cardexWorker()
     var cardex = viewModel.getCardexByAlumno()
-    Log.d("HOMESCREEN", cardex)
     var encodedInfo = Uri.encode(cardex)
     navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
 }
 
 suspend fun obtenerKardexConPromedioByAlumnoDB(viewModel: AlumnoViewModel, navController: NavController){
     var cardex = viewModel.getCardexByAlumnoDB()
-    Log.d("HOMESCREEN", cardex)
     var encodedInfo = Uri.encode(cardex)
     navController.navigate(AppScreens.CardexScreen.route + encodedInfo)
 }

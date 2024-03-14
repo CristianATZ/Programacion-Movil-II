@@ -95,8 +95,6 @@ fun AcademicScheduleScreen(
     val scope = rememberCoroutineScope()
     val uiStateCarga by viewModelAcademic.workerUiStateCarga.collectAsStateWithLifecycle()
 
-    var dayList = listOf("Lun","Mar","Mie","Jue","Vie")
-
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {

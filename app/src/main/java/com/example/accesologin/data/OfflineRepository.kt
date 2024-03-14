@@ -27,7 +27,6 @@ class OfflineRepository(
     private val cardexDao: CardexDao,
     private val cardexPromDao: CardexPromDao
 ): RepositoryDB {
-    //override suspend fun getAccesDB(matricula: String, contrasenia: String): Acceso_Entity = accesoDao.getAccess(matricula, contrasenia)
     override suspend fun getAccesDB(matricula: String, password: String): Acceso_Entity {
         return accesoDao.getAccess(matricula, password)
     }

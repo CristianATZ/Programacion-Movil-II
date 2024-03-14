@@ -35,32 +35,25 @@ class LoginViewModel(
     private val offlineRepository: OfflineRepository,
     private val workerRepository: WorkerRepository
 ): ViewModel() {
+    // Variables para la matricula, password y el acceso a la BDD de Room
     var matricula by mutableStateOf("S20120202")
     var password by mutableStateOf("7Sf_/r6Q")
-
     private val db = AlumnosContainer.getDataBase()
 
-
-    // Actualizar matricula
     fun updateMatricula(value: String) {
         matricula = value
     }
 
-    // Actulziar password
     fun updatePassword(value: String) {
         password = value
     }
 
 
-
-    // obtener acceso a sice
+    // Métodos para tomar los datos de las peticiones realizadas al servidor --------------------------------------
     suspend fun getAccess(matricula: String, password: String): Boolean {
-        //val TAG = "VIEWMODEL"
-        //Log.d(TAG, matricula+", "+password+" = "+alumnosRepository.obtenerAcceso(matricula, password).toString())
         return alumnosRepository.obtenerAcceso(matricula, password)
     }
 
-    // obtener info de sice
     suspend fun getInfo(): String {
         val info = viewModelScope.async {
             alumnosRepository.obtenerInfo()
@@ -68,12 +61,11 @@ class LoginViewModel(
         return info.await()
     }
 
-    // METODOS DEL REPOSITORIO OFFLINE
+
+    // Métodos para obtener los datos de las tablas de la BDD de Room -------------------------------
     suspend fun getAccessDB(matricula: String, password: String): Boolean{
         return try {
             db.UserLoginDao().getAccess(matricula, password).acceso == "true"
-            //Log.d("LoginViewModel", offlineRepository.getAccesDB(matricula, password).acceso.toString())
-            //offlineRepository.getAccesDB(matricula, password).acceso == "true"
         } catch (exception: Exception){
             false
         }
@@ -82,18 +74,19 @@ class LoginViewModel(
     suspend fun getInfoDB(): String {
         return try {
             db.UserInfoDao().getAlumno().toString()
-            //offlineRepository.getAlumnoDB().toString()
         } catch (e: Exception){
             ""
         }
     }
 
-    // WOKRKERS
+
+    // Función que invoca al worker de guardado de info del alumno -----------------------------------
     fun guardadoWorker(){
         return workerRepository.guardadoWorker()
     }
 
 
+    // Creación de un objeto asociado a la clase
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

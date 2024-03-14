@@ -148,7 +148,6 @@ class WorkerSupervisor(context: Context): WorkerRepository {
             else null
         }
 
-
     override val outputWorkCardex: Flow<WorkInfo> =
         workManager.getWorkInfosByTagLiveData("PullCardexWorker").asFlow().mapNotNull {
             if (it.isNotEmpty()) it.first()

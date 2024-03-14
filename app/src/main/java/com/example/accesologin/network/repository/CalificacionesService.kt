@@ -13,7 +13,7 @@ interface CalificacionesService {
         "SOAPAction: \"http://tempuri.org/getCalifUnidadesByAlumno\""
     )
 
-    // POST para obtener la carga academica
+    // POST para obtener las calificaciones de las unidades
     @POST("ws/wsalumnos.asmx")
     suspend fun getCalifUnidadesByAlumno(
         @Body requestBody: RequestBody

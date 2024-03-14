@@ -14,7 +14,7 @@ interface CalifFinalesService {
         "SOAPAction: \"http://tempuri.org/getAllCalifFinalByAlumnos\""
     )
 
-    // POST para obtener la carga academica
+    // POST para obtener las calificaciones finales
     @POST("ws/wsalumnos.asmx")
     suspend fun getAllCalifFinalByAlumnos(
         @Body requestBody: RequestBody

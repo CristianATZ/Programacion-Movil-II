@@ -13,7 +13,7 @@ interface KardexService {
         "SOAPAction: \"http://tempuri.org/getAllKardexConPromedioByAlumno\""
     )
 
-    // POST para obtener la carga academica
+    // POST para obtener el cardex
     @POST("ws/wsalumnos.asmx")
     suspend fun getCardex(
         @Body requestBody: RequestBody

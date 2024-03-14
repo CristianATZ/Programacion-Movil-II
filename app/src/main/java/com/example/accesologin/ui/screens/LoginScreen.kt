@@ -325,23 +325,18 @@ fun conexionInternet(context: Context): Boolean {
 }
 
 suspend fun obtenerAcceso(viewModel: LoginViewModel): Boolean {
-    //val TAG = "LOGIN SCREEN"
-    //Log.d(TAG, viewModel.getAccess(viewModel.matricula, viewModel.password).toString())
     return viewModel.getAccess(viewModel.matricula, viewModel.password)
 }
 
 suspend fun obtenerInfo(viewModel: LoginViewModel, navController: NavController){
     var info = viewModel.getInfo()
     var encodedInfo = Uri.encode(info)
-    // INVOCACION DEL WORKER
     viewModel.guardadoWorker()
     navController.navigate(AppScreens.HomeScreen.route + encodedInfo)
 }
 
 suspend fun obtenerInfoDB(viewModel: LoginViewModel, navController: NavController){
-    // MANDAR INFO POR AQUI
     var info = viewModel.getInfoDB()
-    Log.d("noInternet",info)
     var encodedInfo = Uri.encode(info)
     navController.navigate(AppScreens.HomeScreen.route + encodedInfo)
 }

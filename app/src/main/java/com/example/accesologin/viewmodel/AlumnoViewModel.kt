@@ -38,9 +38,11 @@ class AlumnoViewModel(
     private val offlineRepository: OfflineRepository,
     private val workerRepository: WorkerRepository
 ): ViewModel() {
+    // Variable para acceder a la base de datos
     private val db = AlumnosContainer.getDataBase()
 
-    // Variable que monitorea el estado del worker de la información del alumno
+
+    // Monitores de estado de los Workers ---------------------------------------------------------------
     val workerUiStateInfo: StateFlow<WorkerInfoState> = workerRepository.outputWorkGuardado
         .map { info ->
             when {
@@ -57,7 +59,6 @@ class AlumnoViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = WorkerInfoState.Default
         )
-
 
     val workerUiStateCarga: StateFlow<WorkerCargaState> = workerRepository.outputWorkCarga
         .map { info ->
@@ -128,7 +129,7 @@ class AlumnoViewModel(
         )
 
 
-    // OBTENCION DE INFO DEL SICE ------------------------------------
+    // Métodos para tomar los datos de las peticiones realizadas al servidor --------------------------------------
     suspend fun getAcademicSchedule(): String {
         val schedule = viewModelScope.async{
             alumnosRepository.obtenerCarga()
@@ -158,7 +159,7 @@ class AlumnoViewModel(
     }
 
 
-    // OBTENCION DE INFO DE LA BDD
+    // Métodos para obtener los datos de las tablas de la BDD de Room -------------------------------
     suspend fun getAcademicScheduleDB(): String {
         return try {
             // Log.d("y es la marca RE-GIS-TRADA", db.UserCargaDao().getCarga().toString())
@@ -172,9 +173,7 @@ class AlumnoViewModel(
 
     suspend fun getCardexByAlumnoDB(): String {
         return try {
-            //Log.d("AlumnoViewModel", db.UserCardexDao().getCardex().toString())
             db.UserCardexDao().getCardex().toString()
-            //offlineRepository.getCardexDB().toString()
         } catch (e: Exception){
             ""
         }
@@ -183,7 +182,6 @@ class AlumnoViewModel(
     suspend fun getCalifByUnidadDB(): String {
         return try {
             db.UserCalifUnidadDao().getCalifsUnidad().toString()
-            //offlineRepository.getCalifUnidadDB().toString()
         } catch (e: Exception){
             ""
         }
@@ -192,13 +190,13 @@ class AlumnoViewModel(
     suspend fun getCalifFinalDB(): String {
         return try {
             db.UserCalifFinalDao().getCalifsFinal().toString()
-            //offlineRepository.getCalifFinalDB().toString()
         } catch (e: Exception){
             ""
         }
     }
 
-    // WORKERS
+
+    // Funciones que invocan a los Workers alojados en el repositorio de Workers -----------------------------
     fun cargaWorker(){
         return workerRepository.cargaWorker()
     }
@@ -215,6 +213,8 @@ class AlumnoViewModel(
         return workerRepository.cardexWorker()
     }
 
+
+    // Creación de un objeto asociado a la clase
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -234,6 +234,7 @@ class AlumnoViewModel(
 }
 
 
+// Creacion de interfaces anidadas que funcionarán como flags o banderas para los workers
 sealed interface WorkerInfoState {
     object Default: WorkerInfoState
     object Loading: WorkerInfoState

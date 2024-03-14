@@ -60,12 +60,10 @@ class NetworkAlumnosRepository(
             """.trimIndent()
         val requestBody=xml.toRequestBody()
         alumnoApiService.getCookies()
-        val TAG = "REPOSITORY"
         try {
             var respuesta=alumnoApiService.getAccess(requestBody).string().split("{","}")
             if(respuesta.size>1){
                 val result = Gson().fromJson("{"+respuesta[1]+"}", Acceso::class.java)
-                //Log.d(TAG, "ENTRO AL IF Y ES: " + result.acceso.toString())
                 if(result.acceso.equals("true")){
                     CoroutineScope(Dispatchers.IO).launch {
                         AlumnosContainer.getUserLoginDao().deleteAccesos()
@@ -84,11 +82,9 @@ class NetworkAlumnosRepository(
                 }
                 else return false
             } else {
-                //Log.d(TAG, "ENTRO AL ELSE Y ES: false")
                 return false
             }
         }catch (e:IOException){
-            //Log.d(TAG, "ENTRO AL EXCEPTION Y ES: false")
             return false
         }
     }
@@ -105,11 +101,8 @@ class NetworkAlumnosRepository(
         val requestBody=xml.toRequestBody()
         try {
             val respuestaInfo= infoService.getInfo(requestBody).string().split("{","}")
-            //Log.d(TAG, respuestaInfo.toString())
             if(respuestaInfo.size>1){
-                //Log.d("REPOSITORY", respuestaInfo[1])
                 val result = Gson().fromJson("{"+respuestaInfo[1]+"}", Alumno::class.java)
-                Log.d("REPOSITORY",result.toString())
                 return "" + result
             } else
                 return ""
@@ -120,7 +113,6 @@ class NetworkAlumnosRepository(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun obtenerCarga(): String {
-        val TAG = "REPOSITORY"
         val xml = """
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
               <soap:Body>
@@ -139,7 +131,6 @@ class NetworkAlumnosRepository(
                         arreglo.add(objCarga)
                     }
                 }
-                Log.d(TAG, arreglo.toString())
                 return ""+arreglo
             } else
                 return ""
@@ -151,7 +142,6 @@ class NetworkAlumnosRepository(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun obtenerCalificaciones(): String {
-        val TAG = "REPOSITORY"
         val xml = """
             <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
                 <soap:Body>
@@ -162,17 +152,14 @@ class NetworkAlumnosRepository(
         val requestBody = xml.toRequestBody()
         try {
             val respuestaInfo = calificacionesService.getCalifUnidadesByAlumno(requestBody).string().split("{","}")
-            //Log.d("asdasd", respuestaInfo.toString())
             if(respuestaInfo.size > 1){
                 val arreglo = mutableListOf<CalificacionByUnidad>()
                 for(calificaciones in respuestaInfo){
                     if(calificaciones.contains("Materia")){
                         val objCalif = Gson().fromJson("{"+calificaciones+"}", CalificacionByUnidad::class.java)
-                        //Log.d("asdasd", objCalif.toString())
                         arreglo.add(objCalif)
                     }
                 }
-                //Log.d("asdasd", arreglo.toString())
                 return ""+arreglo
             } else
                 return ""
@@ -195,19 +182,15 @@ class NetworkAlumnosRepository(
         """.trimIndent()
         val requestBody = xml.toRequestBody()
         try {
-            // val respuestaInfo = calificacionesService.getCalifUnidadesByAlumno(requestBody).string().split("{","}")
             val respuestaInfo = califFinales.getAllCalifFinalByAlumnos(requestBody).string().split("{","}")
-            // Log.d("asdasd", respuestaInfo.toString())
             if(respuestaInfo.size > 1){
                 val arreglo = mutableListOf<CalifFinal>()
                 for(calificaciones in respuestaInfo){
                     if(calificaciones.contains("calif")){
                         val objCalif = Gson().fromJson("{"+calificaciones+"}", CalifFinal::class.java)
-                        // Log.d("asdasd", objCalif.toString())
                         arreglo.add(objCalif)
                     }
                 }
-                //Log.d("asdasd", arreglo.toString())
                 return ""+arreglo
             } else
                 return ""
@@ -231,14 +214,12 @@ class NetworkAlumnosRepository(
         val requestBody = xml.toRequestBody()
         try {
             val respuestaInfo = alumnoCardex.getCardex(requestBody).string().split("{","}")
-            //Log.d("asdasd", respuestaInfo.toString())
             if(respuestaInfo.size > 1){
                 val arreglo = mutableListOf<Cardex>()
                 var prom: String = "Null"
                 for(cardex in respuestaInfo){
                     if(cardex.contains("Materia")){
                         val objCardex = Gson().fromJson("{$cardex}", Cardex::class.java)
-                        //Log.d("asdasd", objCardex.toString())
                         arreglo.add(objCardex)
                     } else if(cardex.contains("PromedioGral")){
                         prom = Gson().fromJson("{$cardex}", CardexProm::class.java).toString()
