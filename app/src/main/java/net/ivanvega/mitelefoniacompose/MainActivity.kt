@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.telephony.TelephonyManager
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels

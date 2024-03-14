@@ -3,9 +3,7 @@ package net.ivanvega.mitelefoniacompose
 import android.content.Context
 import android.telephony.SmsManager
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,11 +31,12 @@ class ScreenViewModel: ViewModel() {
         }
     }
 
-    fun EnviarMensaje(numero: String, context: Context) {
+    fun EnviarMensaje(numero: String) {
         val manager = SmsManager.getDefault()
         // mandar mensaje al numero
-        manager.sendTextMessage("4451573811",null,_telefono.value,null,null)
-        Log.d("Mensaje","si jalo")
+        Log.d("EnviarMensaje","si jalo")
+        if(_telefono.value.equals(numero)){
+            manager.sendTextMessage(_telefono.value,null,_mensaje.value,null,null)
+        }
     }
-
 }
