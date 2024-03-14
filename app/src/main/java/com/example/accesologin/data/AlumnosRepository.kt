@@ -102,6 +102,19 @@ class NetworkAlumnosRepository(
         try {
             val respuestaInfo= infoService.getInfo(requestBody).string().split("{","}")
             if(respuestaInfo.size>1){
+
+
+
+
+
+
+
+
+
+
+
+
+
                 val result = Gson().fromJson("{"+respuestaInfo[1]+"}", Alumno::class.java)
                 return "" + result
             } else

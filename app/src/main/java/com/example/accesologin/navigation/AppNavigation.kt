@@ -1,5 +1,7 @@
 package com.example.accesologin.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -14,6 +16,7 @@ import com.example.accesologin.ui.screens.HomeScreen
 import com.example.accesologin.ui.screens.LoginScreen
 import com.example.accesologin.ui.screens.UnitsCalifScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(){
     val navController = rememberNavController()
