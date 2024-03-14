@@ -95,7 +95,13 @@ dependencies {
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
-    // WorkManager
+    // WorkManager y su monitoreo
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:${rootProject.extra["lifecycle_version"]}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${rootProject.extra["lifecycle_version"]}")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:${rootProject.extra["lifecycle_version"]}")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${rootProject.extra["lifecycle_version"]}")
+
+
 
 }

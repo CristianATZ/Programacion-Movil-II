@@ -17,6 +17,7 @@ import android.content.Context
 interface AppContainer {
     val alumnosRepository: AlumnosRepository
     val offlineRepository: OfflineRepository
+    val workerRepository: WorkerRepository
 }
 
 class DefaultAppContainer(private val context: Context): AppContainer {
@@ -77,6 +78,10 @@ class DefaultAppContainer(private val context: Context): AppContainer {
             SICEDatabase.getDatabase(context).UserCardexDao(),
             SICEDatabase.getDatabase(context).UserCardexPromDao()
         )
+    }
+
+    override val workerRepository: WorkerRepository by lazy {
+        WorkerSupervisor(context)
     }
 }
 

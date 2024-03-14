@@ -11,8 +11,11 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
+import com.example.accesologin.data.OfflineRepository
+import com.example.accesologin.data.WorkerRepository
 import com.example.accesologin.workers.PullCardexPromWorker
 import com.example.accesologin.workers.PullCardexWorker
 import com.example.accesologin.workers.PullCargaWorker
@@ -24,11 +27,37 @@ import com.example.accesologin.workers.SaveCargaWorker
 import com.example.accesologin.workers.SaveFinalesWorker
 import com.example.accesologin.workers.SaveUnidadesWorker
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 
-class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewModel() {
+class AlumnoViewModel(
+    private val alumnosRepository: AlumnosRepository,
+    private val offlineRepository: OfflineRepository,
+    private val workerRepository: WorkerRepository
+): ViewModel() {
     private val workManager = WorkManager.getInstance()
     private val db = AlumnosContainer.getDataBase()
+
+    // Variable que monitorea el estado del worker de la información del alumno
+    val workerUiStateInfo: StateFlow<WorkerInfoState> = workerRepository.outputWorkGuardado
+        .map { info ->
+            when {
+                info.state.isFinished -> {
+                    WorkerInfoState.Complete
+                }
+                info.state == WorkInfo.State.FAILED -> {
+                    WorkerInfoState.Default
+                }
+                else -> WorkerInfoState.Loading
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = WorkerInfoState.Default
+        )
 
     // OBTENCION DE INFO DEL SICE ------------------------------------
     suspend fun getAcademicSchedule(): String {
@@ -65,6 +94,7 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
         return try {
             // Log.d("y es la marca RE-GIS-TRADA", db.UserCargaDao().getCarga().toString())
             db.UserCargaDao().getCarga().toString()
+            //offlineRepository.getCargaDB().toString()
         } catch (e: Exception){
             ""
         }
@@ -73,8 +103,9 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
 
     suspend fun getCardexByAlumnoDB(): String {
         return try {
-            Log.d("AlumnoViewModel", db.UserCardexDao().getCardex().toString())
+            //Log.d("AlumnoViewModel", db.UserCardexDao().getCardex().toString())
             db.UserCardexDao().getCardex().toString()
+            //offlineRepository.getCardexDB().toString()
         } catch (e: Exception){
             ""
         }
@@ -83,6 +114,7 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
     suspend fun getCalifByUnidadDB(): String {
         return try {
             db.UserCalifUnidadDao().getCalifsUnidad().toString()
+            //offlineRepository.getCalifUnidadDB().toString()
         } catch (e: Exception){
             ""
         }
@@ -91,91 +123,27 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
     suspend fun getCalifFinalDB(): String {
         return try {
             db.UserCalifFinalDao().getCalifsFinal().toString()
+            //offlineRepository.getCalifFinalDB().toString()
         } catch (e: Exception){
             ""
         }
     }
 
-
-    // WORKERS ---------------------------------------------------------------
-    internal fun cargaWorker(){
-        var cadena = workManager
-            .beginUniqueWork(
-                "TRAER_DATOS_SICE",
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullCargaWorker::class.java)
-            )
-
-        val guardado = OneTimeWorkRequestBuilder<SaveCargaWorker>()
-            .addTag("GUARDAR_DATOS_EN_ROOM")
-            .build()
-
-        cadena = cadena.then(guardado)
-        cadena.enqueue()
+    // WORKERS
+    fun cargaWorker(){
+        return workerRepository.cargaWorker()
     }
 
-    internal fun cardexWorker(){
-        var cadena = workManager
-            .beginUniqueWork(
-                "TRAER_DATOS_SICE",
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullCardexWorker::class.java)
-            )
-
-        val guardado = OneTimeWorkRequestBuilder<SaveCardexWorker>()
-            .addTag("GUARDAR_DATOS_EN_ROOM")
-            .build()
-
-        cadena = cadena.then(guardado)
-        cadena.enqueue()
+    fun unidadesWorker(){
+        return workerRepository.unidadesWorker()
     }
 
-    internal fun cardexPromWorker(){
-        var cadena = workManager
-            .beginUniqueWork(
-                "TRAER_DATOS_SICE",
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullCardexPromWorker::class.java)
-            )
-
-        val guardado = OneTimeWorkRequestBuilder<SaveCardexPromWorker>()
-            .addTag("GUARDAR_DATOS_EN_ROOM")
-            .build()
-
-        cadena = cadena.then(guardado)
-        cadena.enqueue()
+    fun finalesWorker(){
+        return workerRepository.finalesWorker()
     }
 
-    internal fun unidadesWorker(){
-        var cadena = workManager
-            .beginUniqueWork(
-                "TRAER_DATOS_SICE",
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullUnidadesWorker::class.java)
-            )
-
-        val guardado = OneTimeWorkRequestBuilder<SaveUnidadesWorker>()
-            .addTag("GUARDAR_DATOS_EN_ROOM")
-            .build()
-
-        cadena = cadena.then(guardado)
-        cadena.enqueue()
-    }
-
-    internal fun finalesWorker(){
-        var cadena = workManager
-            .beginUniqueWork(
-                "TRAER_DATOS_SICE",
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullFinalesWorker::class.java)
-            )
-
-        val guardado = OneTimeWorkRequestBuilder<SaveFinalesWorker>()
-            .addTag("GUARDAR_DATOS_EN_ROOM")
-            .build()
-
-        cadena = cadena.then(guardado)
-        cadena.enqueue()
+    fun cardexWorker(){
+        return workerRepository.cardexWorker()
     }
 
     companion object {
@@ -183,9 +151,22 @@ class AlumnoViewModel(private val alumnosRepository: AlumnosRepository): ViewMod
             initializer {
                 val application = (this[APPLICATION_KEY] as AlumnosContainer)
                 val alumnosAplication = application.container.alumnosRepository
-                AlumnoViewModel(alumnosRepository = alumnosAplication)
+                val workerAplication = application.container.workerRepository
+                val offlineAplication = application.container.offlineRepository
+                AlumnoViewModel(
+                    alumnosRepository = alumnosAplication,
+                    workerRepository = workerAplication,
+                    offlineRepository = offlineAplication
+                )
             }
         }
     }
 
+}
+
+
+sealed interface WorkerInfoState {
+    object Default: WorkerInfoState
+    object Loading: WorkerInfoState
+    object Complete: WorkerInfoState
 }

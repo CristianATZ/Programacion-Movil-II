@@ -17,20 +17,29 @@ import androidx.room.Room
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.accesologin.AlumnosContainer
 import com.example.accesologin.data.OfflineRepository
+import com.example.accesologin.data.WorkerRepository
 import com.example.accesologin.workers.PullInfoWorker
 import com.example.accesologin.workers.SaveInfoWorker
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val alumnosRepository: AlumnosRepository,
-    private val offlineRepository: OfflineRepository
+    private val offlineRepository: OfflineRepository,
+    private val workerRepository: WorkerRepository
 ): ViewModel() {
     var matricula by mutableStateOf("S20120202")
     var password by mutableStateOf("7Sf_/r6Q")
+
     private val db = AlumnosContainer.getDataBase()
+
 
     // Actualizar matricula
     fun updateMatricula(value: String) {
@@ -42,22 +51,7 @@ class LoginViewModel(
         password = value
     }
 
-    private val workManager = WorkManager.getInstance()
-    internal fun guardadoWorker(){
-        var cadena = workManager
-            .beginUniqueWork(
-                "TRAER_DATOS_SICE",
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(PullInfoWorker::class.java)
-            )
 
-        val guardado = OneTimeWorkRequestBuilder<SaveInfoWorker>()
-            .addTag("GUARDAR_DATOS_EN_ROOM")
-            .build()
-
-        cadena = cadena.then(guardado)
-        cadena.enqueue()
-    }
 
     // obtener acceso a sice
     suspend fun getAccess(matricula: String, password: String): Boolean {
@@ -78,6 +72,8 @@ class LoginViewModel(
     suspend fun getAccessDB(matricula: String, password: String): Boolean{
         return try {
             db.UserLoginDao().getAccess(matricula, password).acceso == "true"
+            //Log.d("LoginViewModel", offlineRepository.getAccesDB(matricula, password).acceso.toString())
+            //offlineRepository.getAccesDB(matricula, password).acceso == "true"
         } catch (exception: Exception){
             false
         }
@@ -86,12 +82,17 @@ class LoginViewModel(
     suspend fun getInfoDB(): String {
         return try {
             db.UserInfoDao().getAlumno().toString()
+            //offlineRepository.getAlumnoDB().toString()
         } catch (e: Exception){
             ""
         }
     }
 
-    
+    // WOKRKERS
+    fun guardadoWorker(){
+        return workerRepository.guardadoWorker()
+    }
+
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -99,11 +100,14 @@ class LoginViewModel(
                 val application = (this[APPLICATION_KEY] as AlumnosContainer)
                 val alumnosAplication = application.container.alumnosRepository
                 val alumnosAplicationDB = application.container.offlineRepository
+                val workerAplication = application.container.workerRepository
                 LoginViewModel(
                     alumnosRepository = alumnosAplication,
-                    offlineRepository = alumnosAplicationDB
+                    offlineRepository = alumnosAplicationDB,
+                    workerRepository = workerAplication
                 )
             }
         }
     }
 }
+

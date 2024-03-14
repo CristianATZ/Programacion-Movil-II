@@ -110,31 +110,6 @@ class NetworkAlumnosRepository(
                 //Log.d("REPOSITORY", respuestaInfo[1])
                 val result = Gson().fromJson("{"+respuestaInfo[1]+"}", Alumno::class.java)
                 Log.d("REPOSITORY",result.toString())
-                /*
-                CoroutineScope(Dispatchers.IO).launch {
-                    AlumnosContainer.getUserInfoDao().insertAlumno(
-                        Alumno_Entity(
-                            id = 0,
-                            nombre = result.nombre,
-                            fechaReins = result.fechaReins,
-                            semActual = result.semActual,
-                            cdtosActuales = result.cdtosActuales,
-                            cdtosAcumulados = result.cdtosAcumulados,
-                            carrera = result.carrera,
-                            matricula = result.matricula,
-                            especialidad = result.especialidad,
-                            modEducativo = result.modEducativo,
-                            adeudo = result.adeudo,
-                            urlFoto = result.urlFoto,
-                            adeudoDescription = result.adeudoDescripcion,
-                            inscrito = result.inscrito,
-                            estatus = result.estatus,
-                            lineamiento = result.lineamiento,
-                            fecha = LocalDateTime.now().toString()
-                        )
-                    )
-                }
-                 */
                 return "" + result
             } else
                 return ""
@@ -162,30 +137,6 @@ class NetworkAlumnosRepository(
                     if(carga.contains("Materia")){
                         val objCarga = Gson().fromJson("{"+carga+"}", Carga::class.java)
                         arreglo.add(objCarga)
-                        /*
-                        CoroutineScope(Dispatchers.IO).launch {
-                            AlumnosContainer.getUserCargaDao().insertCarga(
-                                Carga_Entity(
-                                    id = 0,
-                                    Semipresencial = objCarga.Semipresencial,
-                                    Observaciones = objCarga.Observaciones,
-                                    Docente = objCarga.Docente,
-                                    clvOficial = objCarga.clvOficial,
-                                    Sabado = objCarga.Sabado,
-                                    Viernes = objCarga.Viernes,
-                                    Jueves = objCarga.Jueves,
-                                    Miercoles = objCarga.Miercoles,
-                                    Martes = objCarga.Martes,
-                                    Lunes = objCarga.Lunes,
-                                    EstadoMateria = objCarga.EstadoMateria,
-                                    CreditosMateria = objCarga.CreditosMateria,
-                                    Materia = objCarga.Materia,
-                                    Grupo = objCarga.Grupo,
-                                    fecha = LocalDateTime.now().toString()
-                                )
-                            )
-                        }
-                         */
                     }
                 }
                 Log.d(TAG, arreglo.toString())
@@ -219,33 +170,6 @@ class NetworkAlumnosRepository(
                         val objCalif = Gson().fromJson("{"+calificaciones+"}", CalificacionByUnidad::class.java)
                         //Log.d("asdasd", objCalif.toString())
                         arreglo.add(objCalif)
-                        /*
-                        CoroutineScope(Dispatchers.IO).launch {
-                            AlumnosContainer.getUserCalifUnidadDao().insertCalifUnidad(
-                                CalifUnidad_Entity(
-                                    id = 0,
-                                    Observaciones = objCalif.Observaciones,
-                                    C13 = objCalif.C13,
-                                    C12 = objCalif.C12,
-                                    C11 = objCalif.C11,
-                                    C10 = objCalif.C10,
-                                    C9 = objCalif.C9,
-                                    C8 = objCalif.C8,
-                                    C7 = objCalif.C7,
-                                    C6 = objCalif.C6,
-                                    C5 = objCalif.C5,
-                                    C4 = objCalif.C4,
-                                    C3 = objCalif.C3,
-                                    C2 = objCalif.C2,
-                                    C1 = objCalif.C1,
-                                    UnidadesActivas = objCalif.UnidadesActivas,
-                                    Materia = objCalif.Materia,
-                                    Grupo = objCalif.Grupo,
-                                    fecha = LocalDateTime.now().toString()
-                                )
-                            )
-                        }
-                         */
                     }
                 }
                 //Log.d("asdasd", arreglo.toString())
@@ -281,21 +205,6 @@ class NetworkAlumnosRepository(
                         val objCalif = Gson().fromJson("{"+calificaciones+"}", CalifFinal::class.java)
                         // Log.d("asdasd", objCalif.toString())
                         arreglo.add(objCalif)
-                        /*
-                        CoroutineScope(Dispatchers.IO).launch {
-                            AlumnosContainer.getUserCalifFinalDao().insertCalifFinal(
-                                CalifFinal_Entity(
-                                    id = 0,
-                                    calif = objCalif.calif,
-                                    acred = objCalif.acred,
-                                    grupo = objCalif.grupo,
-                                    materia = objCalif.materia,
-                                    Observaciones = objCalif.Observaciones,
-                                    fecha = LocalDateTime.now().toString()
-                                )
-                            )
-                        }
-                        */
                     }
                 }
                 //Log.d("asdasd", arreglo.toString())
@@ -331,54 +240,11 @@ class NetworkAlumnosRepository(
                         val objCardex = Gson().fromJson("{$cardex}", Cardex::class.java)
                         //Log.d("asdasd", objCardex.toString())
                         arreglo.add(objCardex)
-                        /*
-                        CoroutineScope(Dispatchers.IO).launch {
-                            AlumnosContainer.getUserCardexDao().insertCardex(
-                                Cardex_Entity(
-                                    id = 0,
-                                    ClvMat = objCardex.ClvMat,
-                                    ClvOfiMat = objCardex.ClvOfiMat,
-                                    Materia = objCardex.Materia,
-                                    Cdts = objCardex.Cdts,
-                                    Calif = objCardex.Calif,
-                                    Acred = objCardex.Acred,
-                                    S1 = objCardex.S1,
-                                    P1 = objCardex.P1,
-                                    A1 = objCardex.A1,
-                                    S2 = objCardex.S2,
-                                    P2 = objCardex.P2,
-                                    A2 = objCardex.A2,
-                                    S3 = objCardex.S3,
-                                    P3 = objCardex.P3,
-                                    A3 = objCardex.A3,
-                                    fecha = LocalDateTime.now().toString()
-                                )
-                            )
-                        }
-                         */
                     } else if(cardex.contains("PromedioGral")){
                         prom = Gson().fromJson("{$cardex}", CardexProm::class.java).toString()
                         var objProm = Gson().fromJson("{$cardex}", CardexProm::class.java)
-                        /*
-                        CoroutineScope(Dispatchers.IO).launch {
-                            AlumnosContainer.getUserCardexPromDao().insertCardexProm(
-                                CardexProm_Entity(
-                                    id = 0,
-                                    PromedioGral = objProm.PromedioGral,
-                                    CdtsPlan = objProm.CdtsPlan,
-                                    CtdsAcum = objProm.CdtsAcum,
-                                    MatCursadas = objProm.MatCursadas,
-                                    MatAprobadas = objProm.MatAprobadas,
-                                    AvanceCdts = objProm.AvanceCdts,
-                                    fecha = LocalDateTime.now().toString()
-                                )
-                            )
-                        }
-                         */
-                        //Log.d("Promediomamalon", prom)
                     }
                 }
-                //Log.d("asdasd", prom+"/"+arreglo.toString())
                 return prom+"~"+arreglo
             } else
                 return ""

@@ -1,6 +1,7 @@
 package com.example.accesologin.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
@@ -54,8 +55,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.work.impl.utils.PreferenceUtils
 import com.example.accesologin.data.AppContainer
 import com.example.accesologin.data.CookiesInterceptor
 import com.example.accesologin.model.Acceso
@@ -64,8 +67,11 @@ import com.example.accesologin.model.Carga
 import com.example.accesologin.navigation.AppScreens
 import com.example.accesologin.viewmodel.AlumnoViewModel
 import com.example.accesologin.viewmodel.LoginViewModel
+import com.example.accesologin.viewmodel.WorkerInfoState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -79,6 +85,7 @@ fun HomeScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val uiStateInfo by viewModelAcademic.workerUiStateInfo.collectAsStateWithLifecycle()
 
     var openCloseSesion by remember {
         mutableStateOf(false)
@@ -287,10 +294,29 @@ fun HomeScreen(
                 ) {
                     Text(text = "Cerrar sesion", modifier = Modifier.padding(PaddingValues(4.dp)))
                 }
+
+                Text(text =
+                    when(uiStateInfo){
+                        is WorkerInfoState.Default -> {
+                            "No se ha sincronizado con SICENet"
+                        }
+                        is WorkerInfoState.Loading -> {
+                            "Sincronizando con SICENet..."
+                        }
+                        is WorkerInfoState.Complete -> {
+                            if(conexionInternet(context)) "Última actualización: " + SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(
+                                Date()
+                            )
+                            else "Última actualización: " + estudiante?.get(15)?.split("=")?.get(1).toString()
+                        }
+                    }
+                )
+
             }
         }
     }
 }
+
 
 @Composable
 fun DialogCloseSesion() {
